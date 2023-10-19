@@ -1,0 +1,71 @@
+#navigation-bar {
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--color-menu-backdrop);
+  color: var(--color-menu-border);
+  overflow-x: auto;
+}
+
+#navigation-bar > button {
+  display: block;
+  padding: 0;
+  border: 0;
+  background-color: var(--color-menu-backdrop);
+}
+
+#navigation-bar > button > * {
+  display: block;
+  font-size: 1.3rem;
+  color: var(--color-menu-border);
+  background-color: var(--color-menu-backdrop);
+  text-decoration: none;
+  border: .1rem solid var(--color-menu-backdrop);
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+}
+
+#navigation-bar > button > input {
+  width: 10rem;
+}
+
+#navigation-bar  *::-webkit-file-upload-button {
+  display: none;
+}
+
+/*#navigation-bar > button > a:visited {*/
+/*    text-decoration: none;*/
+/*}*/
+
+#navigation-bar > button:hover:not(:disabled) > * {
+  background-color: var(--color-menu-btn-hover);
+  border-style: solid;
+}
+
+#navigation-bar > button:disabled > * {
+  color: var(--color-btn-disabled);
+}
+
+
+/*@media (max-aspect-ratio: 5/8) {*/
+/*    #controls-screen {*/
+/*        margin: 0;*/
+/*        display: flex;*/
+/*        flex-wrap: wrap;*/
+/*    }*/
+/*}*/
+
+/*#controls-screen > h3 {*/
+/*    margin: .5rem;*/
+/*}*/
+
+/*#controls-screen > button {*/
+/*    display: block;*/
+/*    padding: .5rem;*/
+/*    margin: .5rem;*/
+/*}*/
+
+/*#controls-screen button:hover:not(:disabled) {*/
+/*    border-color: darkgreen;*/
+/*    border-width: .1rem;*/
+/*}*/
