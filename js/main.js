@@ -34,6 +34,7 @@ function startTimer() {
   if (timerIntervalId) clearInterval(timerIntervalId);
   // store the interval to clear it later
   timerIntervalId = setInterval(() => {
-    timerEl.innerText = Math.round((new Date() - startTime) / 1000) + 's';
+    const text = Math.round((new Date() - startTime) / 1000) + 's';
+    if (text !== timerEl.innerText) timerEl.innerText = text;
   }, 100);
 }
