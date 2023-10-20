@@ -1,7 +1,8 @@
 'use strict';
 
 export default {
-  get
+  get,
+  post
 }
 
 // get id from Dynamo table items
@@ -20,12 +21,9 @@ async function get(id) {
   }
 }
 
-async function postItems(id, items) {
+async function post(id, payload) {
   try {
     const response = await fetch(
-      // "https://lfiwccnp51.execute-api.us-west-2.amazonaws.com/default/lamda_test_template_restful?"
-      // + new URLSearchParams({TableName: 'items'}), {
-
       "https://lfiwccnp51.execute-api.us-west-2.amazonaws.com/default/lamda_test_template_restful", {
         method: "POST", // or 'PUT'
         headers: {
@@ -34,8 +32,8 @@ async function postItems(id, items) {
         body: JSON.stringify({
             "TableName": "items",
             "Item": {
-              "id": 'receipt-scanner.' + id,
-              "items": items
+              "id": 'words-with-friends.'+id,
+              "items": payload
             }
           }
         )

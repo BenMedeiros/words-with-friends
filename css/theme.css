@@ -127,8 +127,16 @@ canvas {
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
+  overflow: hidden;
 }
 
 .word.clicked {
   color: var(--color-backdrop-hover);
+}
+
+.word.red {
+  background-color: red;
+}
+.word.blue {
+  background-color: blue;
 }

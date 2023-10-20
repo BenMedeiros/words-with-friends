@@ -1,4 +1,4 @@
-#navigation-bar {
+.header-bar {
   width: auto;
   display: flex;
   flex-wrap: wrap;
@@ -7,14 +7,14 @@
   overflow-x: auto;
 }
 
-#navigation-bar > button {
+.header-bar > button {
   display: block;
   padding: 0;
   border: 0;
   background-color: var(--color-menu-backdrop);
 }
 
-#navigation-bar > button > * {
+.header-bar > button > * {
   display: block;
   font-size: 1.3rem;
   color: var(--color-menu-border);
@@ -25,24 +25,24 @@
   padding: .5rem 1rem;
 }
 
-#navigation-bar > button > input {
+.header-bar > button > input {
   width: 10rem;
 }
 
-#navigation-bar  *::-webkit-file-upload-button {
+.header-bar  *::-webkit-file-upload-button {
   display: none;
 }
 
-/*#navigation-bar > button > a:visited {*/
+/*.header-bar > button > a:visited {*/
 /*    text-decoration: none;*/
 /*}*/
 
-#navigation-bar > button:hover:not(:disabled) > * {
+.header-bar > button:hover:not(:disabled) > * {
   background-color: var(--color-menu-btn-hover);
   border-style: solid;
 }
 
-#navigation-bar > button:disabled > * {
+.header-bar > button:disabled > * {
   color: var(--color-btn-disabled);
 }
 

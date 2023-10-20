@@ -87,6 +87,7 @@ export class LabelInputType {
     this.element.classList.toggle('modified', false);
     // use input to account for increment wheels
     this.element.addEventListener('input', (e) => {
+      console.log('input');
       this.checkModified();
     });
 
