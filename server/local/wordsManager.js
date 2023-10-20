@@ -25,7 +25,7 @@ export function selectNewGameWords(wordKey) {
   // choose semi-random set of words
   gameState.words = allWords.sort((a, b) => 0.5 - Math.random()).slice(0, gameState.wordsPerGame);
   gameState.wordsStates = new Array(gameState.wordsPerGame).fill(null);
-  gameState.wordsGoal = new Array(gameState.wordsPerGame).fill(null);
+  gameState.wordsGoal = new Array(gameState.wordsPerGame).fill('neutral');
 
 
   if (gameState.wordsPerGame < 10) throw new Error('Must player with at least 10 words.');
@@ -40,6 +40,5 @@ export function selectNewGameWords(wordKey) {
   // double sort since it's a quick poor sort
   gameState.wordsGoal.sort((a, b) => 0.5 - Math.random());
   gameState.wordsGoal.sort((a, b) => 0.5 - Math.random());
-
 
 }
