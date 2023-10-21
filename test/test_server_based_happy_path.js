@@ -1,25 +1,42 @@
-import api from "../server/local/api.js";
+import clientActions from "../server/client/clientActions.js";
+
 
 export function runAllTests() {
+  runAllTestsAsync().then();
+}
 
-  api.newGame();
-  api.updatePlayer('ben', 'red', 1);
-  api.updatePlayer('sam', 'red', 2);
-  api.updatePlayer('dave', 'blue', 3);
-  api.updatePlayer('paul', 'blue', 4);
+export async function runAllTestsAsync() {
 
-  api.startGame('food');
+  await clientActions.poll();
+  console.log('poll done');
+  await clientActions.newGame();
+  clientActions.bindDeviceId(1);
+  await clientActions.updatePlayer('ben', 'red');
+  clientActions.bindDeviceId(2);
+  await clientActions.updatePlayer('sam', 'red');
+  clientActions.bindDeviceId(3);
+  await clientActions.updatePlayer('dave', 'blue');
+  clientActions.bindDeviceId(4);
+  await clientActions.updatePlayer('paul', 'blue');
 
-  api.submitClue(3, 'raw', 2);
-  api.markGuesses(4, [8, 2]);
-  api.submitGuesses(4);
+  clientActions.bindDeviceId(3);
+  await clientActions.startGame('food');
+  await clientActions.submitClue('raw', 2);
 
-  api.submitClue(1, 'bar', 5);
-  api.markGuesses(2, [1, 4, 9]);
-  api.submitGuesses(2);
+  clientActions.bindDeviceId(4);
+  await clientActions.markGuesses([8, 2]);
+  await clientActions.submitGuesses();
 
+  clientActions.bindDeviceId(1);
+  await clientActions.submitClue('bar', 5);
+  clientActions.bindDeviceId(2);
+  await clientActions.markGuesses([1, 4, 9]);
+  await clientActions.submitGuesses();
 
-  api.submitClue(3, 'tool', 2);
-  api.markGuesses(4, [13]);
-  api.submitGuesses(4);
+  clientActions.bindDeviceId(3);
+  await clientActions.submitClue(3, 'tool', 2);
+
+  clientActions.bindDeviceId(4);
+  await clientActions.markGuesses([13]);
+  await clientActions.submitGuesses(4);
 }

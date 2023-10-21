@@ -2,12 +2,10 @@
 
 // load once from db then keep in cache
 import {gameState} from "./gameState.js";
+import {getWordLists} from "./dbLocalStorage.js";
 
-let wordLists = localStorage.getItem('words-with-friends.words');
+let wordLists = await getWordLists();
 // {wordKey: [words]}
-wordLists = JSON.parse(wordLists);
-delete wordLists.id;
-console.log('words loaded from localStorage');
 
 // populate the wordLists that are available to play from db
 export function initializeWordLists() {

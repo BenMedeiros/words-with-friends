@@ -1,7 +1,12 @@
 'use strict';
-
+/*
+* Acts as server side code for all of the actions available
+* The client side should call these after client side validations to reduce calls
+*
+* */
 import {gameState, initializeGameState, nextTurn} from "./gameState.js";
 import {initializeWordLists, selectNewGameWords} from "./wordsManager.js";
+import {getDeviceIdCounter, setDeviceIdCounter} from "./dbLocalStorage.js";
 
 export default {
   newGame,
@@ -9,20 +14,26 @@ export default {
   startGame,
   submitClue,
   markGuesses,
-  submitGuesses
+  submitGuesses,
+  poll
 }
 
-let deviceIdCounter = 1;
+let deviceIdCounter = await getDeviceIdCounter();
 
-function newGame() {
+function newGame(deviceId) {
   initializeGameState();
   initializeWordLists();
+
+  return poll(deviceId);
 }
 
 // players add themselves to teams, assign a deviceId first time calling api
 // can't update player during game, but can add new player
-function updatePlayer(name, team, deviceId) {
-  if (!deviceId) deviceId = deviceIdCounter++;
+function updatePlayer(deviceId, name, team) {
+  if (!deviceId) {
+    deviceId = deviceIdCounter++;
+    setDeviceIdCounter(deviceIdCounter).then();
+  }
 
   const existingPlayer = gameState.players.find(el => el.deviceId === deviceId);
   if (existingPlayer) {
@@ -33,11 +44,13 @@ function updatePlayer(name, team, deviceId) {
   }
 
   gameState.players.push({deviceId, name, team});
+
+  return poll(deviceId);
 }
 
 // starts the game, must have 2 team, each with 2 players
 // starts game with wordKey to select the word list
-function startGame(wordKey) {
+function startGame(deviceId, wordKey) {
   console.log(gameState);
   if (gameState.isGameStarted) throw new Error('Game already started.');
   const redTeam = gameState.getRedPlayers();
@@ -55,6 +68,8 @@ function startGame(wordKey) {
   // gameState.spymasterBlue = blueTeam[Math.floor(Math.random() * blueTeam.length)];
   gameState.spymasterBlue = blueTeam[0];
   gameState.spymasterRed = redTeam[0];
+
+  return poll(deviceId);
 }
 
 // spymaster for current team should submit a clue for his team
@@ -68,17 +83,15 @@ function submitClue(deviceId, clue, count) {
 
   gameState.turn.clue = clue;
   gameState.turn.count = count;
+
+  return poll(deviceId);
 }
 
 // common check: check if it's player's team's turn
 function validateIsTurn(deviceId) {
-  const existingPlayer = gameState.getPlayerById(deviceId);
-  if (gameState.turn.isRedTurn && existingPlayer.team !== 'red') {
-    throw new Error('Not your turn');
-  }
-  if (!gameState.turn.isRedTurn && existingPlayer.team !== 'blue') {
-    throw new Error('Not your turn');
-  }
+  if (!gameState.isGameStarted) throw new Error('Game not started');
+  if (gameState.winner) throw new Error('Game over, winner is ' + gameState.winner);
+  if (!gameState.isTeamTurn(deviceId)) throw new Error('Not your turn');
 }
 
 // player marks which words they are guessing, before submitting
@@ -117,6 +130,8 @@ function markGuesses(deviceId, guessIndexes) {
       }
     }
   }
+
+  return poll(deviceId);
 }
 
 // submits the guesses that are already in wordStates, all players must have same guesses
@@ -144,7 +159,24 @@ function submitGuesses(deviceId) {
     gameState.wordsStates[guessIndex] = gameState.wordsGoal[guessIndex];
   }
   // save the guesses in history
-  gameState.history[gameState.getTurnTeam()].push(guessIndexes);
+  gameState.history[gameState.getTurnTeam()].push({
+    clue: gameState.turn.clue,
+    count: gameState.turn.count,
+    guessIndexes
+  });
 
   nextTurn();
+
+  return poll(deviceId);
+}
+
+// returns the state of the game for player, removes sensitive info
+function poll(deviceId) {
+  const response = Object.assign({}, gameState);
+  if (!gameState.isGameStarted || !gameState.isSpymaster(deviceId)) {
+    delete response.wordsGoal;
+  }
+
+  response.thisPlayer = gameState.getPlayerById(deviceId);
+  return response;
 }

@@ -1,6 +1,13 @@
 'use strict';
 
-export const gameState = {};
+import {getLastSavedGameState, saveGameState} from "./dbLocalStorage.js";
+
+export const gameState = await getLastSavedGameState();
+if(Object.keys(gameState).length === 0){
+ console.log('no previous game state so initializing');
+ initializeGameState();
+}
+bindCommonFunctions(gameState);
 
 // starts a new game
 export function initializeGameState() {
@@ -21,6 +28,7 @@ export function initializeGameState() {
   gameState.winner = null;
   // which team's turn
   gameState.turn = {
+    turn: 0,
     isRedTurn: true,
     startTime: null,
     clue: null,
@@ -38,37 +46,50 @@ export function initializeGameState() {
   gameState.wordsStates = [];
   // for each word, is the word: red, blue, death, or null/neutral
   gameState.wordsGoal = [];
-//  history of guesses per team
+
+  // history of guesses per team
   gameState.history = {
     red: [],
     blue: []
   }
 
-//  simple common functions
-  gameState.getPlayerById = (deviceId) => gameState.players.find(el => el.deviceId === deviceId);
-  gameState.isSpymaster = (deviceId) => gameState.spymasterRed.deviceId === deviceId || gameState.spymasterBlue.deviceId === deviceId;
-  gameState.getRedPlayers = () => gameState.players.filter(el => el.team === 'red');
-  gameState.getBluePlayers = () => gameState.players.filter(el => el.team === 'blue');
+  saveGameState(gameState).then();
+}
 
-  gameState.getCountRedGoal = () => gameState.wordsGoal.filter(el => el === 'red').length;
-  gameState.getCountBlueGoal = () => gameState.wordsGoal.filter(el => el === 'blue').length;
-  gameState.getCountRedCurrent = () => gameState.wordsStates.filter(el => el === 'red').length;
-  gameState.getCountBlueCurrent = () => gameState.wordsStates.filter(el => el === 'blue').length;
+// simple common functions for the gameState
+export function bindCommonFunctions(gs) {
+  gs.getPlayerById = (deviceId) => gs.players.find(el => el.deviceId === deviceId);
+  gs.isSpymaster = (deviceId) => (gs.spymasterRed && gs.spymasterRed.deviceId === deviceId)
+    || (gs.spymasterBlue && gs.spymasterBlue.deviceId === deviceId);
+  gs.getRedPlayers = () => gs.players.filter(el => el.team === 'red');
+  gs.getBluePlayers = () => gs.players.filter(el => el.team === 'blue');
 
-  gameState.getTurnTeam = () => gameState.turn.isRedTurn ? 'red' : 'blue';
+  gs.getCountRedGoal = () => gs.wordsGoal.filter(el => el === 'red').length;
+  gs.getCountBlueGoal = () => gs.wordsGoal.filter(el => el === 'blue').length;
+  gs.getCountRedCurrent = () => gs.wordsStates.filter(el => el === 'red').length;
+  gs.getCountBlueCurrent = () => gs.wordsStates.filter(el => el === 'blue').length;
+
+  gs.getTurnTeam = () => gs.turn.isRedTurn ? 'red' : 'blue';
+  gs.isTeamTurn = (deviceId) => {
+    const player = gs.getPlayerById(deviceId);
+    return player && player.team === gs.getTurnTeam();
+  };
 }
 
 export function nextTurn() {
   checkGameOver();
   if (gameState.winner) {
     console.log('WINNER');
-    return
+    return;
   }
 
+  gameState.turn.turn++;
   gameState.turn.startTime = new Date();
   gameState.turn.isRedTurn = !gameState.turn.isRedTurn;
   gameState.turn.clue = null;
   gameState.turn.count = 0;
+
+  saveGameState(gameState).then();
 }
 
 // checks if either team reached death or their color, ties go to non turn's team
