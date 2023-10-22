@@ -12,14 +12,35 @@ async function start() {
   await clientActions.poll();
   const gameState = clientActions.getCachedGameState();
 
+
+  new ButtonType('new-game', 'New Game',
+    clientActions.newGame,
+    false, null, navBarEl);
+
+  new ButtonType('add-fake-players', 'Add Fake Players',
+    async () => {
+      clientActions.bindDeviceId(1);
+      await clientActions.updatePlayer('ben', 'red');
+      clientActions.bindDeviceId(2);
+      await clientActions.updatePlayer('sam', 'red');
+      clientActions.bindDeviceId(3);
+      await clientActions.updatePlayer('dave', 'blue');
+      clientActions.bindDeviceId(4);
+      await clientActions.updatePlayer('paul', 'blue');
+    },
+    false, null, navBarEl);
+
   for (const key of gameState.wordLists) {
-    new ButtonType('new-game' + key, 'New Game - ' + key,
-      () => {
+    new ButtonType('start-game' + key, 'Start Game - ' + key,
+      async () => {
+        await clientActions.startGame(key);
         updateWordBoxes();
         startTimer();
       },
       false, null, navBarEl);
   }
+
+
 
 }
 

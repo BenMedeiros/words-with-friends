@@ -17,8 +17,8 @@ export default {
   updatePlayer: isLocal ? api.updatePlayer : async (deviceId, name, team) => {
     await post('updatePlayer', {deviceId, name, team});
   },
-  startGame: isLocal ? api.startGame : async (deviceId, workKey) => {
-    await post('startGame', {deviceId, workKey});
+  startGame: isLocal ? api.startGame : async (deviceId, wordKey) => {
+    await post('startGame', {deviceId, wordKey});
   },
   submitClue: isLocal ? api.submitClue : async (deviceId, clue, count) => {
     await post('submitClue', {deviceId, clue, count});

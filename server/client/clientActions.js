@@ -10,6 +10,7 @@
 // this player id
 import clientApiRouter from "./clientApiRouter.js";
 import {bindCommonFunctions} from "../local/gameState.js";
+import validations from "./validations.js";
 
 let deviceId = null;
 let gameState = null;
@@ -26,7 +27,7 @@ const actionStates = {
   submitGuesses: false
 }
 
-setInterval(poll, 20000);
+setInterval(poll, 5000);
 
 
 export default {
@@ -65,23 +66,11 @@ function processResponse(response) {
     JSON.stringify(gameState));
 
   // update action states to enable/disable in UI
-
-  actionStates.updatePlayer = !(gameState.isGameStarted);
-
-  actionStates.startGame = !gameState.isGameStarted
-    && gameState.getRedPlayers().length >= 2 && gameState.getBluePlayers().length >= 2;
-
-  if (!gameState.isGameStarted || gameState.winner || !gameState.isTeamTurn(deviceId)) {
-    actionStates.submitClue = false;
-    actionStates.markGuesses = false;
-    actionStates.submitGuesses = false;
-  } else {
-    actionStates.submitClue = !gameState.turn.clue && gameState.isSpymaster(deviceId);
-    // markGuesses also needs validation on the per click of word
-    actionStates.markGuesses = !gameState.isSpymaster(deviceId);
-    // need to validate player agreed on votes
-    actionStates.submitGuesses = !gameState.isSpymaster(deviceId);
-  }
+  actionStates.updatePlayer = !validations.updatePlayer(gameState);
+  actionStates.startGame = !validations.startGame(gameState);
+  actionStates.submitClue = !validations.submitClue(gameState, deviceId);
+  actionStates.markGuesses = !validations.markGuesses(gameState, deviceId);
+  actionStates.submitGuesses = !validations.submitGuesses(gameState, deviceId);
 }
 
 async function poll() {
@@ -105,14 +94,14 @@ async function newGame() {
 }
 
 async function updatePlayer(name, team) {
-  if (!actionStates.updatePlayer) throw new Error('No updatePlayer');
+  if (!actionStates.updatePlayer) throw new Error(validations.updatePlayer(gameState));
 
   const response = await clientApiRouter.updatePlayer(deviceId, name, team);
   processResponse(response);
 }
 
 async function startGame(wordKey) {
-  if (!actionStates.startGame) throw new Error('No startGame' + JSON.stringify(gameState.players));
+  if (!actionStates.startGame) throw new Error(validations.startGame(gameState));
 
   const response = await clientApiRouter.startGame(deviceId, wordKey)
   processResponse(response);

@@ -19,6 +19,7 @@ export default {
 }
 
 let deviceIdCounter = await getDeviceIdCounter();
+initializeWordLists();
 
 function newGame(deviceId) {
   initializeGameState();
