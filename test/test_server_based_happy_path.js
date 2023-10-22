@@ -8,7 +8,7 @@ export function runAllTests() {
 export async function runAllTestsAsync() {
 
   await clientActions.poll();
-  console.log('poll done');
+  console.log('poll done ');
   await clientActions.newGame();
   clientActions.bindDeviceId(1);
   await clientActions.updatePlayer('ben', 'red');
