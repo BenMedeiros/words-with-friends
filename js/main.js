@@ -5,6 +5,7 @@ import {LabelInputType} from "../html/tinyComponents/LabelInputType.js";
 import clientActions from "../server/client/clientActions.js";
 import {runAllTests} from "../test/test_server_based_happy_path.js";
 import {updateWordBoxes} from "./app/gameboard.js";
+import {createPlayerSelector} from "./app/playerSelector.js";
 
 const navBarEl = document.getElementById("navigation-bar");
 const mainEl = document.getElementById("main");
@@ -45,7 +46,7 @@ async function start() {
 
 
 
-
+createPlayerSelector();
 
 
 const timerEl = document.getElementById("timer");
@@ -62,13 +63,6 @@ function startTimer() {
   }, 100);
 }
 
-
-const nameInput = new LabelInputType('item', 'string', null,
-  null, 'name', false);
-nameInput.createElementIn(navBarEl);
-nameInput.onModified(() => {
-  console.log(nameInput.getValue());
-});
 
 
 start().then(() => {

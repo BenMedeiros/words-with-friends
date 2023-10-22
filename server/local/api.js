@@ -177,6 +177,7 @@ function poll(deviceId) {
     delete response.wordsGoal;
   }
 
+  console.log('server poll', deviceId, gameState.getPlayerById(deviceId));
   response.thisPlayer = gameState.getPlayerById(deviceId);
   return response;
 }

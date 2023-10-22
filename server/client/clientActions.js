@@ -36,6 +36,7 @@ export default {
   // shouldn't need to use this except during testing
   bindDeviceId: (spoofId) => {
     deviceId = spoofId;
+    gameState.thisPlayer = gameState.getPlayerById(deviceId);
     processResponse(gameState);
 
   },

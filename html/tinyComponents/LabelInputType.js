@@ -17,7 +17,7 @@ export class LabelInputType {
     if (name === 'id') {
       throw new Error('id/name cannot be id because it messes up using el.id for some reason');
     }
-    this.id = name + '-' + idCounter++;
+    this.id = name + '-lbl-' + idCounter++;
     this.name = name;
     //wrapped the type for common scenarios
     if (type === 'number') {
