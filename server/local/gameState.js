@@ -58,6 +58,7 @@ export function initializeGameState() {
 
 // simple common functions for the gameState
 export function bindCommonFunctions(gs) {
+  gs.getThisDeviceId = () => gs.thisPlayer ? gs.thisPlayer.deviceId : null;
   gs.getPlayerById = (deviceId) => gs.players.find(el => el.deviceId === deviceId);
   gs.isSpymaster = (deviceId) => (gs.spymasterRed && gs.spymasterRed.deviceId === deviceId)
     || (gs.spymasterBlue && gs.spymasterBlue.deviceId === deviceId);

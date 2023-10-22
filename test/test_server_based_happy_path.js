@@ -1,4 +1,5 @@
 import clientActions from "../server/client/clientActions.js";
+import {addFakePlayers} from "../js/app/playerSelector.js";
 
 
 export function runAllTests() {
@@ -10,14 +11,8 @@ export async function runAllTestsAsync() {
   await clientActions.poll();
   console.log('poll done ');
   await clientActions.newGame();
-  clientActions.bindDeviceId(1);
-  await clientActions.updatePlayer('ben', 'red');
-  clientActions.bindDeviceId(2);
-  await clientActions.updatePlayer('sam', 'red');
-  clientActions.bindDeviceId(3);
-  await clientActions.updatePlayer('dave', 'blue');
-  clientActions.bindDeviceId(4);
-  await clientActions.updatePlayer('paul', 'blue');
+
+  addFakePlayers();
 
   clientActions.bindDeviceId(3);
   await clientActions.startGame('food');

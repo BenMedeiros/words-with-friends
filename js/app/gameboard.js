@@ -9,6 +9,12 @@ import validations from "../../server/client/validations.js";
 *
 * */
 
+// store local guesses since these may be different than what the server thinks
+// ultimately what the client says they've clicked is most accurate
+let localGuessIndexes = [];
+let localGuessTurn = null;
+let localGuessDeviceId = null;
+
 document.addEventListener('new-server-response', updateWordBoxes);
 
 // save the currently displayed words to quickly check if they need update
@@ -46,17 +52,13 @@ export function updateWordBoxes() {
 // update word boxes using gameState.wordsStates every time we poll
 function updateWordBoxClassStates() {
   const gameState = clientActions.getCachedGameState();
+  checkClearLocalGuesses();
 
 //  TODO compare wordsStates to populated and update
   for (let i = 0; i < gameState.wordsStates.length; i++) {
     const div = document.getElementById('word-' + i);
 
-    if (validations.clickWordBox(gameState, i)) {
-      //  if user can't click the word box, disable it
-      div.onclick = null;
-    } else {
-      div.onclick = clickWordBox.bind(null, i);
-    }
+    div.onclick = clickWordBox.bind(null, i);
 
     // things could be in any state, so remove everything
     div.classList.toggle('clicked', gameState.wordsStates[i] === 'clicked');
@@ -67,15 +69,12 @@ function updateWordBoxClassStates() {
   }
 }
 
-// store local guesses since these may be different than what the server thinks
-// ultimately what the client says they've clicked is most accurate
-let localGuessIndexes = [];
-
 function clickWordBox(wordIndex) {
   const gameState = clientActions.getCachedGameState();
 
   // can't click on words already in these states
-  if (!validations.clickWordBox(gameState, wordIndex)) {
+  const validationMsg = validations.clickWordBox(gameState, wordIndex);
+  if (!validationMsg) {
     const div = document.getElementById('word-' + wordIndex);
 
     if (localGuessIndexes.indexOf(wordIndex) === -1) {
@@ -87,5 +86,22 @@ function clickWordBox(wordIndex) {
       localGuessIndexes.splice(wordIndex, 1);
       div.classList.remove('clicked');
     }
+  } else {
+    console.info(validationMsg);
+  }
+}
+
+// when a new response comes, if the turn changed clear player's guesses
+// also check if player changed (which should happen during testing only)
+function checkClearLocalGuesses() {
+  const gameState = clientActions.getCachedGameState();
+
+  if (gameState.getThisDeviceId() !== localGuessDeviceId) {
+    localGuessDeviceId = gameState.getThisDeviceId();
+    localGuessIndexes.length = 0;
+  }
+  if (gameState.turn.turn !== localGuessTurn) {
+    localGuessTurn = gameState.turn.turn;
+    localGuessIndexes.length = 0;
   }
 }
