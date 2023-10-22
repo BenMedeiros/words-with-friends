@@ -11,14 +11,14 @@ import api from "../local/api.js";
 const isLocal = true;
 
 export default {
-  newGame: isLocal ? api.newGame : async (deviceId) => {
-    await post('newGame', {deviceId});
+  newGame: isLocal ? api.newGame : async (deviceId, wordKey) => {
+    await post('newGame', {deviceId, wordKey});
   },
   updatePlayer: isLocal ? api.updatePlayer : async (deviceId, name, team) => {
     await post('updatePlayer', {deviceId, name, team});
   },
-  startGame: isLocal ? api.startGame : async (deviceId, wordKey) => {
-    await post('startGame', {deviceId, wordKey});
+  startGame: isLocal ? api.startGame : async (deviceId) => {
+    await post('startGame', {deviceId});
   },
   submitClue: isLocal ? api.submitClue : async (deviceId, clue, count) => {
     await post('submitClue', {deviceId, clue, count});

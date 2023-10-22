@@ -34,6 +34,14 @@ export default {
   submitGuesses: (gameState, deviceId) => {
     if (gameState.isSpymaster(deviceId)) return 'Spymasters cant guess..';
     return isTurn(gameState, deviceId);
+  },
+  clickWordBox: (gameState, wordIndex) => {
+    if(['red', 'blue', 'death', 'neutral'].indexOf(gameState.wordsStates[wordIndex]) !== -1){
+      return 'Word already marked';
+    }
+    if(!gameState.thisPlayer) return 'No player assigned.';
+    if (gameState.isSpymaster(gameState.thisPlayer.deviceId)) return 'Spymasters cant guess..';
+    return isTurn(gameState, gameState.thisPlayer.deviceId);
   }
 
 }

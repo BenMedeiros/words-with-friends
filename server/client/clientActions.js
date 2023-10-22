@@ -62,8 +62,6 @@ function processResponse(response) {
   }
 
   bindCommonFunctions(gameState);
-  console.log(JSON.stringify(gameState.getRedPlayers()),
-    JSON.stringify(gameState));
 
   // update action states to enable/disable in UI
   actionStates.updatePlayer = !validations.updatePlayer(gameState);
@@ -71,6 +69,8 @@ function processResponse(response) {
   actionStates.submitClue = !validations.submitClue(gameState, deviceId);
   actionStates.markGuesses = !validations.markGuesses(gameState, deviceId);
   actionStates.submitGuesses = !validations.submitGuesses(gameState, deviceId);
+
+  document.dispatchEvent(new Event('new-server-response'));
 }
 
 async function poll() {
@@ -81,15 +81,14 @@ async function poll() {
   }
 
   const response = await clientApiRouter.poll(deviceId);
-  console.log('poll', JSON.stringify(response));
   processResponse(response);
 }
 
 
-async function newGame() {
+async function newGame(wordKey) {
   if (!actionStates.newGame) throw new Error('No newGame');
 
-  const response = await clientApiRouter.newGame(deviceId);
+  const response = await clientApiRouter.newGame(deviceId, wordKey);
   processResponse(response);
 }
 
@@ -100,10 +99,10 @@ async function updatePlayer(name, team) {
   processResponse(response);
 }
 
-async function startGame(wordKey) {
+async function startGame() {
   if (!actionStates.startGame) throw new Error(validations.startGame(gameState));
 
-  const response = await clientApiRouter.startGame(deviceId, wordKey)
+  const response = await clientApiRouter.startGame(deviceId)
   processResponse(response);
 }
 

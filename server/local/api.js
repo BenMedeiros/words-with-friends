@@ -21,9 +21,10 @@ export default {
 let deviceIdCounter = await getDeviceIdCounter();
 initializeWordLists();
 
-function newGame(deviceId) {
+function newGame(deviceId, wordKey) {
   initializeGameState();
   initializeWordLists();
+  selectNewGameWords(wordKey);
 
   return poll(deviceId);
 }
@@ -51,8 +52,7 @@ function updatePlayer(deviceId, name, team) {
 
 // starts the game, must have 2 team, each with 2 players
 // starts game with wordKey to select the word list
-function startGame(deviceId, wordKey) {
-  console.log(gameState);
+function startGame(deviceId) {
   if (gameState.isGameStarted) throw new Error('Game already started.');
   const redTeam = gameState.getRedPlayers();
   const blueTeam = gameState.getBluePlayers();
@@ -60,7 +60,6 @@ function startGame(deviceId, wordKey) {
   if (redTeam.length < 2) throw new Error('Red team needs more players');
   if (blueTeam.length < 2) throw new Error('Blue team needs more players');
 
-  selectNewGameWords(wordKey);
   gameState.isGameStarted = true;
   gameState.gameStartTime = new Date();
   nextTurn();
