@@ -8,7 +8,7 @@
 * */
 
 // this player id
-import api from "../local/api.js";
+import clientApiRouter from "./clientApiRouter.js";
 import {bindCommonFunctions} from "../local/gameState.js";
 
 let deviceId = null;
@@ -30,6 +30,7 @@ setInterval(poll, 20000);
 
 
 export default {
+  getCachedGameState: () => gameState,
   // since we're faking different devices, need to rerun processResponse with the new deviceId
   // shouldn't need to use this except during testing
   bindDeviceId: (spoofId) => {
@@ -90,7 +91,7 @@ async function poll() {
     return;
   }
 
-  const response = await api.poll(deviceId);
+  const response = await clientApiRouter.poll(deviceId);
   console.log('poll', JSON.stringify(response));
   processResponse(response);
 }
@@ -99,21 +100,21 @@ async function poll() {
 async function newGame() {
   if (!actionStates.newGame) throw new Error('No newGame');
 
-  const response = await api.newGame(deviceId);
+  const response = await clientApiRouter.newGame(deviceId);
   processResponse(response);
 }
 
 async function updatePlayer(name, team) {
   if (!actionStates.updatePlayer) throw new Error('No updatePlayer');
 
-  const response = await api.updatePlayer(deviceId, name, team);
+  const response = await clientApiRouter.updatePlayer(deviceId, name, team);
   processResponse(response);
 }
 
 async function startGame(wordKey) {
   if (!actionStates.startGame) throw new Error('No startGame' + JSON.stringify(gameState.players));
 
-  const response = await api.startGame(deviceId, wordKey)
+  const response = await clientApiRouter.startGame(deviceId, wordKey)
   processResponse(response);
 }
 
@@ -125,20 +126,20 @@ async function submitClue(clue, count) {
   }
 
 //  this one's localStorage local actually would work fine
-  const response = await api.submitClue(deviceId, clue, count);
+  const response = await clientApiRouter.submitClue(deviceId, clue, count);
   processResponse(response);
 }
 
 async function markGuesses(guessIndexes) {
   if (!actionStates.markGuesses) throw new Error('No markGuesses' + !(gameState.isSpymaster(deviceId)));
 
-  const response = await api.markGuesses(deviceId, guessIndexes);
+  const response = await clientApiRouter.markGuesses(deviceId, guessIndexes);
   processResponse(response);
 }
 
 async function submitGuesses() {
   if (!actionStates.submitGuesses) throw new Error('No submitGuesses');
 
-  const response = await api.submitGuesses(deviceId);
+  const response = await clientApiRouter.submitGuesses(deviceId);
   processResponse(response);
 }

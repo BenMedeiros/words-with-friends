@@ -1,6 +1,6 @@
 'use strict';
 
-import {formatDate} from "../../js/common/dateUtils.js";
+import {formatDate} from "./dateUtils.js";
 import {bindAutocomplete} from "../components/autocomplete.js";
 
 const supportedTypes = ['number', 'integer', 'currency', 'string', 'checkbox', 'date'];

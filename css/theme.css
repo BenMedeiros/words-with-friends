@@ -140,3 +140,9 @@ canvas {
 .word.blue {
   background-color: blue;
 }
+.word.neutral {
+  background-color: yellow;
+}
+.word.death {
+  background-color: black;
+}
