@@ -9,7 +9,7 @@
 
 // this player id
 import clientApiRouter from "./clientApiRouter.js";
-import {bindCommonFunctions} from "../local/gameState.js";
+import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 import validations from "./validations.js";
 
 let deviceId = null;

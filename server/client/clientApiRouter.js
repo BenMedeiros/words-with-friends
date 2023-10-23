@@ -6,7 +6,7 @@
 * */
 
 // controls whether to use local server api or remote server api
-import api from "../local/api.js";
+import api from "../localServer/api.js";
 
 const isLocal = true;
 
