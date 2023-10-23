@@ -23,7 +23,6 @@ let wordsOnScreenString = null;
 
 // create Word box elements using the gameState.words
 export function updateWordBoxes() {
-  userMessage.msg('New Msg from server');
   const gameState = clientActions.getCachedGameState();
 
   if (wordsOnScreenString !== JSON.stringify(gameState.words)) {
@@ -78,16 +77,20 @@ function clickWordBox(wordIndex) {
   const validationMsg = validations.clickWordBox(gameState, wordIndex);
   if (!validationMsg) {
     const div = document.getElementById('word-' + wordIndex);
+    const indexOfWordIndex = localGuessIndexes.indexOf(wordIndex);
 
-    if (localGuessIndexes.indexOf(wordIndex) === -1) {
+    if (indexOfWordIndex === -1) {
       // add new guess
       localGuessIndexes.push(wordIndex);
       div.classList.add('clicked');
+      userMessage.msg('clicked ' + gameState.words[wordIndex]);
     } else {
       // remove that guess
-      localGuessIndexes.splice(wordIndex, 1);
+      localGuessIndexes.splice(indexOfWordIndex, 1);
       div.classList.remove('clicked');
+      userMessage.msg('removed ' + gameState.words[wordIndex]);
     }
+
   } else {
     userMessage.errorMsg(validationMsg);
   }

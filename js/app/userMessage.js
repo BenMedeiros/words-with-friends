@@ -14,10 +14,12 @@ const teamTurnEl = document.getElementById("team-turn");
 const teamTurnColorEl = document.getElementById("team-turn-color");
 const timerEl = document.getElementById("timer");
 
+let msgCounter = 0;
+
 document.addEventListener('new-server-response', () => {
   const team = clientActions.getCachedGameState().getTurnTeam();
 
-  if(team !== teamTurnColorEl.style.backgroundColor){
+  if (team !== teamTurnColorEl.style.backgroundColor) {
     teamTurnColorEl.style.backgroundColor = team;
     teamTurnEl.innerText = team.toUpperCase() + ' Turn';
   }
@@ -25,7 +27,8 @@ document.addEventListener('new-server-response', () => {
 
 export default {
   msg: (msg) => {
-    msgEl.innerText = msg;
+    msgEl.innerText = `[${msgCounter++}] ${msg}, ${msgEl.innerText}`;
+    setTimeout(trimMsg, 5000);
   },
   errorMsg: (msg) => {
     errorMsgEl.innerText = msg;
@@ -44,6 +47,14 @@ function clearErrorMsg() {
   // display none is better otherwise certain css styles affect it
   errorMsgEl.style.display = 'none';
 }
+
+function trimMsg() {
+  const lastComma = msgEl.innerText.lastIndexOf(', ');
+  if (lastComma > 30) {
+    msgEl.innerText = msgEl.innerText.substring(0, lastComma);
+  }
+}
+
 
 let timerIntervalId = null;
 
