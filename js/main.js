@@ -6,53 +6,42 @@ import clientActions from "../server/client/clientActions.js";
 import {runAllTests} from "../test/test_server_based_happy_path.js";
 import {updateWordBoxes} from "./app/gameboard.js";
 import {addFakePlayers, createPlayerSelector} from "./app/playerSelector.js";
+import validations from "../server/client/validations.js";
+import userMessage from "./app/userMessage.js";
 
 const navBarEl = document.getElementById("navigation-bar");
 const mainEl = document.getElementById("main");
 
 async function start() {
   await clientActions.poll();
-  const gameState = clientActions.getCachedGameState();
 
-  for (const key of gameState.wordLists) {
+  for (const key of clientActions.getCachedGameState().wordLists) {
     new ButtonType('new-game' + key, 'New Game - ' + key,
       async () => {
         await clientActions.newGame(key);
         updateWordBoxes();
-        startTimer();
+        userMessage.startTimer();
       },
       false, null, navBarEl);
   }
+  // fake players button
+  const fakePlayersBtnType = new ButtonType('add-fake-players', 'Add Fake Players',
+    addFakePlayers,
+    false, null,
+    document.getElementById("controls-bar"));
 
-  addFakePlayers();
-
-
-  new ButtonType('start-game', 'Start Game',
+  // start button
+  const startBtnType = new ButtonType('start-game', 'Start Game',
     clientActions.startGame,
-    false, null, navBarEl);
+    true, null, navBarEl);
+  document.addEventListener('new-server-response', () => {
+    fakePlayersBtnType.disableIf(clientActions.getCachedGameState().players.length > 3);
+    startBtnType.disableIf(validations.startGame(clientActions.getCachedGameState()));
+  });
 
 }
 
 createPlayerSelector();
-
-
-const timerEl = document.getElementById("timer");
-let timerIntervalId = null;
-
-function startTimer() {
-  if (timerIntervalId) clearInterval(timerIntervalId);
-  // store the interval to clear it later
-  timerIntervalId = setInterval(() => {
-    const gameState = clientActions.getCachedGameState();
-    if (!(gameState && gameState.turn && gameState.turn.startTime)) {
-      timerEl.innerText = '';
-    } else {
-      const text = Math.round((new Date() - new Date(gameState.turn.startTime)) / 1000) + 's';
-      if (text !== timerEl.innerText) timerEl.innerText = text;
-    }
-  }, 100);
-}
-
 
 start().then(() => {
   // runAllTests.then();

@@ -2,6 +2,7 @@
 
 import clientActions from "../../server/client/clientActions.js";
 import validations from "../../server/client/validations.js";
+import userMessage from "./userMessage.js";
 
 /*
 * Manages creation of board word boxes, and toggles the css classes based on client
@@ -22,12 +23,13 @@ let wordsOnScreenString = null;
 
 // create Word box elements using the gameState.words
 export function updateWordBoxes() {
+  userMessage.msg('New Msg from server');
   const gameState = clientActions.getCachedGameState();
 
   if (wordsOnScreenString !== JSON.stringify(gameState.words)) {
     const gameboardEl = document.getElementById('gameboard');
 
-    console.log('rebuilding word boxes');
+    userMessage.msg('Rebuilding word boxes');
     wordsOnScreenString = JSON.stringify(gameState.words);
     // remove existing game words if they've changed (from new game)
     let child = gameboardEl.lastElementChild;
@@ -87,7 +89,7 @@ function clickWordBox(wordIndex) {
       div.classList.remove('clicked');
     }
   } else {
-    console.info(validationMsg);
+    userMessage.errorMsg(validationMsg);
   }
 }
 

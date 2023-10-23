@@ -75,6 +75,7 @@ export function bindCommonFunctions(gs) {
     const player = gs.getPlayerById(deviceId);
     return player && player.team === gs.getTurnTeam();
   };
+  gs.isThisTeamTurn = () => gs.isTeamTurn(gs.getThisDeviceId());
 }
 
 export function nextTurn() {

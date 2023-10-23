@@ -105,11 +105,46 @@ canvas {
   /*width: 50rem;*/
 }
 
-
-#spymaster-msg {
+/*
+Messages and timers controls by the userMessage.js
+*/
+#msg {
   background-color: var(--color-menu-backdrop-hover);
+  color: var(--color-outline);
 }
 
+#error-msg {
+  background-color: var(--color-outline);
+  color: var(--color-btn-delete);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+#timer, #msg, #error-msg {
+  padding-inline: 1rem;
+  padding-block: .3rem;
+}
+
+#team-msg-wrapper {
+  display: flex;
+  width: 40%;
+  border: solid;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 1.4rem;
+}
+
+#team-turn-color {
+  border-radius: 50%;
+  background-color: blue;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: solid white;
+}
+
+/*
+Game board and word box formatting for gameboard.js
+ */
 #gameboard {
   display: flex;
   flex-wrap: wrap;
@@ -133,7 +168,6 @@ canvas {
 .word.clicked {
   color: var(--color-backdrop-hover);
 }
-
 .word.red {
   background-color: red;
 }
@@ -146,7 +180,6 @@ canvas {
 .word.death {
   background-color: black;
 }
-
 .word:hover:not(.red, .blue, .neutral, .death) {
   border-color: green;
 }

@@ -5,6 +5,7 @@ import {LabelInputType} from "../../html/tinyComponents/LabelInputType.js";
 import {SelectInputType} from "../../html/tinyComponents/SelectInputType.js";
 import clientActions from "../../server/client/clientActions.js";
 import {ButtonType} from "../../html/tinyComponents/ButtonType.js";
+import userMessage from "./userMessage.js";
 
 /*
 * Creates player selection drop down
@@ -32,22 +33,18 @@ export function createPlayerSelector() {
   console.log(playerSelectInput.element);
 
   playerSelectInput.element.onchange = () => {
-    console.log('Player Change ', playerSelectInput.getValue());
+    userMessage.msg('Player Change '+ playerSelectInput.getValue());
     clientActions.bindDeviceId(Number(playerSelectInput.getValue()));
   };
 }
 
-export function addFakePlayers(){
-  new ButtonType('add-fake-players', 'Add Fake Players',
-    async () => {
-      clientActions.bindDeviceId(1);
-      await clientActions.updatePlayer('ben', 'red');
-      clientActions.bindDeviceId(2);
-      await clientActions.updatePlayer('sam', 'red');
-      clientActions.bindDeviceId(3);
-      await clientActions.updatePlayer('dave', 'blue');
-      clientActions.bindDeviceId(4);
-      await clientActions.updatePlayer('paul', 'blue');
-    },
-    false, null, document.getElementById("navigation-bar"));
+export async function addFakePlayers() {
+  clientActions.bindDeviceId(1);
+  await clientActions.updatePlayer('ben', 'red');
+  clientActions.bindDeviceId(2);
+  await clientActions.updatePlayer('sam', 'red');
+  clientActions.bindDeviceId(3);
+  await clientActions.updatePlayer('dave', 'blue');
+  clientActions.bindDeviceId(4);
+  await clientActions.updatePlayer('paul', 'blue');
 }

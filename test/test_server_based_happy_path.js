@@ -12,7 +12,7 @@ export async function runAllTestsAsync() {
   console.log('poll done ');
   await clientActions.newGame();
 
-  addFakePlayers();
+  await addFakePlayers();
 
   clientActions.bindDeviceId(3);
   await clientActions.startGame('food');

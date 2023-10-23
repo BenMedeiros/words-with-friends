@@ -53,14 +53,27 @@ export class ButtonType {
     return btnEl;
   }
 
+  // true - disable, false - enable
+  disableIf(bool){
+    if(bool){
+      this.disable();
+    }else{
+      this.enable();
+    }
+  }
+
   disable() {
-    this.disabled = true;
-    this.element.disabled = true;
+    if(!this.disabled) {
+      this.disabled = true;
+      this.element.disabled = true;
+    }
   }
 
   enable() {
-    this.disabled = false;
-    this.element.disabled = false;
+    if(this.disabled) {
+      this.disabled = false;
+      this.element.disabled = false;
+    }
   }
 
   setValue(value) {
