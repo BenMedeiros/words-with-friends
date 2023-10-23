@@ -27,9 +27,6 @@ const actionStates = {
   submitGuesses: false
 }
 
-setInterval(poll, 5000);
-
-
 export default {
   getCachedGameState: () => gameState,
   // since we're faking different devices, need to rerun processResponse with the new deviceId
@@ -74,6 +71,7 @@ function processResponse(response) {
   document.dispatchEvent(new Event('new-server-response'));
 }
 
+// polls the server for gameState, will prevent polling if gameState is <15s old
 async function poll() {
   // only poll if the data is likely stale
   if (new Date() - lastPoll < 15 * 1000) {
@@ -109,8 +107,8 @@ async function startGame() {
 
 async function submitClue(clue, count) {
   if (!actionStates.submitClue) {
-    console.log(!gameState.isGameStarted , gameState.winner , !gameState.isTeamTurn(deviceId));
-    console.log(gameState.turn.clue , gameState.isSpymaster(deviceId));
+    console.log(!gameState.isGameStarted, gameState.winner, !gameState.isTeamTurn(deviceId));
+    console.log(gameState.turn.clue, gameState.isSpymaster(deviceId));
     throw new Error('No submitClue');
   }
 

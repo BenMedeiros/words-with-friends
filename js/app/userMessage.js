@@ -34,7 +34,7 @@ export default {
     errorMsgEl.innerText = msg;
     errorMsgEl.style.display = null;
     // remove error msg after 3 seconds
-    if (errorMsgTimeout) clearTimeout(clearErrorMsg);
+    if (errorMsgTimeout) clearTimeout(errorMsgTimeout);
     errorMsgTimeout = setTimeout(clearErrorMsg, 3000);
   },
   startTimer

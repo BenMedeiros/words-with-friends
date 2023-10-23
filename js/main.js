@@ -12,6 +12,9 @@ import userMessage from "./app/userMessage.js";
 const navBarEl = document.getElementById("navigation-bar");
 const mainEl = document.getElementById("main");
 
+// how often to background try to poll, clientActions will prevent too unneccessary polling
+setInterval(clientActions.poll, 5000);
+
 async function start() {
   await clientActions.poll();
 

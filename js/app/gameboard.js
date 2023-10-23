@@ -18,11 +18,16 @@ let localGuessDeviceId = null;
 
 document.addEventListener('new-server-response', updateWordBoxes);
 
+// pool the markGuesses to prevent tons of api requests
+let timeoutMarkGuesses = null;
+
 // save the currently displayed words to quickly check if they need update
 let wordsOnScreenString = null;
 
 // create Word box elements using the gameState.words
 export function updateWordBoxes() {
+  userMessage.msg('Server Response');
+
   const gameState = clientActions.getCachedGameState();
 
   if (wordsOnScreenString !== JSON.stringify(gameState.words)) {
@@ -43,6 +48,7 @@ export function updateWordBoxes() {
       div.id = 'word-' + i;
       div.classList.add('word');
       div.innerText = gameState.words[i];
+      div.onclick = clickWordBox.bind(null, i);
       gameboardEl.appendChild(div);
     }
   }
@@ -59,10 +65,21 @@ function updateWordBoxClassStates() {
   for (let i = 0; i < gameState.wordsStates.length; i++) {
     const div = document.getElementById('word-' + i);
 
-    div.onclick = clickWordBox.bind(null, i);
+    const indexOfLocalGuess = localGuessIndexes.indexOf(i);
+    if (indexOfLocalGuess !== -1) {
+      if (['red', 'blue', 'death', 'neutral'].indexOf(gameState.wordsStates[i]) !== -1) {
+        //  this word has been marked so isn't a valid guess
+        div.classList.remove('clicked');
+        // remove that guess
+        localGuessIndexes.splice(indexOfLocalGuess, 1);
+      } else {
+        div.classList.add('clicked');
+      }
+    } else {
+      div.classList.remove('clicked');
+    }
 
     // things could be in any state, so remove everything
-    div.classList.toggle('clicked', gameState.wordsStates[i] === 'clicked');
     div.classList.toggle('red', gameState.wordsStates[i] === 'red');
     div.classList.toggle('blue', gameState.wordsStates[i] === 'blue');
     div.classList.toggle('neutral', gameState.wordsStates[i] === 'neutral');
@@ -77,19 +94,20 @@ function clickWordBox(wordIndex) {
   const validationMsg = validations.clickWordBox(gameState, wordIndex);
   if (!validationMsg) {
     const div = document.getElementById('word-' + wordIndex);
-    const indexOfWordIndex = localGuessIndexes.indexOf(wordIndex);
+    const indexOfLocalGuess = localGuessIndexes.indexOf(wordIndex);
 
-    if (indexOfWordIndex === -1) {
+    if (indexOfLocalGuess === -1) {
       // add new guess
       localGuessIndexes.push(wordIndex);
       div.classList.add('clicked');
       userMessage.msg('clicked ' + gameState.words[wordIndex]);
     } else {
       // remove that guess
-      localGuessIndexes.splice(indexOfWordIndex, 1);
+      localGuessIndexes.splice(indexOfLocalGuess, 1);
       div.classList.remove('clicked');
       userMessage.msg('removed ' + gameState.words[wordIndex]);
     }
+    pooledMarkGuesses();
 
   } else {
     userMessage.errorMsg(validationMsg);
@@ -109,4 +127,18 @@ function checkClearLocalGuesses() {
     localGuessTurn = gameState.turn.turn;
     localGuessIndexes.length = 0;
   }
+}
+
+// submit the guesses to server but wait for user to stop clicking
+function pooledMarkGuesses() {
+  if (timeoutMarkGuesses) clearTimeout(timeoutMarkGuesses);
+
+  timeoutMarkGuesses =  setTimeout(() => {
+    clientActions.markGuesses(localGuessIndexes)
+      .then(() => userMessage.msg('Guesses pushed to server'))
+      .catch(e => {
+        console.error(e);
+        userMessage.errorMsg(e + 'error');
+      });
+  }, 3000);
 }
