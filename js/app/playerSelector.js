@@ -11,29 +11,24 @@ import userMessage from "./userMessage.js";
 * Creates player selection drop down
 * */
 
+const playerSelectInput = new SelectInputType('player', 'Player', null,
+  null, {0: 'Create New Player'}, false);
+
 export function createPlayerSelector() {
-  // const nameInput = new LabelInputType('item', 'string', null,
-  //   null, 'name', false);
-  // nameInput.bindAutocomplete(['jim', 'pam', 'ben']);
-  // nameInput.createElementIn(document.getElementById("navigation-bar"));
-  // nameInput.onModified(() => {
-  //   console.log(nameInput.getValue());
-  // });
-  //
-
-  const playerSelectInput = new SelectInputType('player', 'Player', null, {
-    1: 'Ben 1 Red',
-    2: 'Sam 2 Red',
-    3: 'Dave 3 Blue',
-    4: 'Paul 4 Blue'
-  }, false);
-
   playerSelectInput.createElementIn(document.getElementById("navigation-bar"));
 
   console.log(playerSelectInput.element);
+  document.addEventListener('new-server-response', () => {
+    //  SelectInputType will handle checking for changes
+    const playersMap = {};
+    for (const player of clientActions.getCachedGameState().players) {
+      playersMap[player.deviceId] = `(${player.deviceId}) ${player.name} - ${player.team.toUpperCase()}`;
+    }
+    playerSelectInput.setValuesMap(playersMap);
+  });
 
   playerSelectInput.element.onchange = () => {
-    userMessage.msg('Player Change '+ playerSelectInput.getValue());
+    userMessage.msg('Player Change ' + playerSelectInput.getValue());
     clientActions.bindDeviceId(Number(playerSelectInput.getValue()));
   };
 }

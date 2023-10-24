@@ -20,6 +20,7 @@ document.addEventListener('new-server-response', updateWordBoxes);
 
 // pool the markGuesses to prevent tons of api requests
 let timeoutMarkGuesses = null;
+let lastGuessesSentString = null;
 
 // save the currently displayed words to quickly check if they need update
 let wordsOnScreenString = null;
@@ -133,12 +134,20 @@ function checkClearLocalGuesses() {
 function pooledMarkGuesses() {
   if (timeoutMarkGuesses) clearTimeout(timeoutMarkGuesses);
 
-  timeoutMarkGuesses =  setTimeout(() => {
+  timeoutMarkGuesses = setTimeout(() => {
+    if (lastGuessesSentString === JSON.stringify(localGuessIndexes)) {
+      userMessage.msg('not sending, since no changes');
+      return;
+    }
+
     clientActions.markGuesses(localGuessIndexes)
       .then(() => userMessage.msg('Guesses pushed to server'))
       .catch(e => {
         console.error(e);
         userMessage.errorMsg(e + 'error');
       });
+    // save what was just sent to compare, and only send if different
+    lastGuessesSentString = JSON.stringify(localGuessIndexes);
+
   }, 3000);
 }

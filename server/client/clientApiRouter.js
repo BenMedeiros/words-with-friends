@@ -7,30 +7,26 @@
 
 // controls whether to use local server api or remote server api
 import api from "../localServer/api.js";
+import userMessage from "../../js/app/userMessage.js";
 
 const isLocal = true;
 
 export default {
-  newGame: isLocal ? api.newGame : async (deviceId, wordKey) => {
-    await post('newGame', {deviceId, wordKey});
-  },
-  updatePlayer: isLocal ? api.updatePlayer : async (deviceId, name, team) => {
-    await post('updatePlayer', {deviceId, name, team});
-  },
-  startGame: isLocal ? api.startGame : async (deviceId) => {
-    await post('startGame', {deviceId});
-  },
-  submitClue: isLocal ? api.submitClue : async (deviceId, clue, count) => {
-    await post('submitClue', {deviceId, clue, count});
-  },
-  markGuesses: isLocal ? api.markGuesses : async (deviceId, guessIndexes) => {
-    await post('markGuesses', {deviceId, guessIndexes});
-  },
-  submitGuesses: isLocal ? api.submitGuesses : async (deviceId) => {
-    await post('submitGuesses', {deviceId});
-  },
-  poll: isLocal ? api.poll : async (deviceId) => {
-    await post('poll', {deviceId});
+  newGame: (isLocal ? localCall : post).bind(null, 'newGame'),
+  updatePlayer: (isLocal ? localCall : post).bind(null, 'updatePlayer'),
+  startGame: (isLocal ? localCall : post).bind(null, 'startGame'),
+  submitClue: (isLocal ? localCall : post).bind(null, 'submitClue'),
+  markGuesses: (isLocal ? localCall : post).bind(null, 'markGuesses'),
+  submitGuesses: (isLocal ? localCall : post).bind(null, 'submitGuesses'),
+  poll: (isLocal ? localCall : post).bind(null, 'poll'),
+}
+
+async function localCall(method, params) {
+  try {
+    return await api[method](...Object.values(params));
+  } catch (e) {
+    userMessage.errorMsg(e);
+    throw e;
   }
 }
 

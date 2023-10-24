@@ -8,6 +8,8 @@ import {updateWordBoxes} from "./app/gameboard.js";
 import {addFakePlayers, createPlayerSelector} from "./app/playerSelector.js";
 import validations from "../server/client/validations.js";
 import userMessage from "./app/userMessage.js";
+import {createSubmitGuessesBtn} from "./app/playerActions.js";
+import {startTimer} from "./app/teamAndTimer.js";
 
 const navBarEl = document.getElementById("navigation-bar");
 const mainEl = document.getElementById("main");
@@ -23,7 +25,7 @@ async function start() {
       async () => {
         await clientActions.newGame(key);
         updateWordBoxes();
-        userMessage.startTimer();
+        startTimer();
       },
       false, null, navBarEl);
   }
@@ -48,4 +50,5 @@ createPlayerSelector();
 
 start().then(() => {
   // runAllTests.then();
+  createSubmitGuessesBtn();
 });

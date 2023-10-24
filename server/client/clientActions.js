@@ -11,21 +11,11 @@
 import clientApiRouter from "./clientApiRouter.js";
 import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 import validations from "./validations.js";
+import userMessage from "../../js/app/userMessage.js";
 
 let deviceId = null;
 let gameState = null;
 let lastPoll = null;
-
-// stores the states of whether user can submit these actions
-// coincide directly with the api's Error validations
-const actionStates = {
-  newGame: true,
-  updatePlayer: true,
-  startGame: false,
-  submitClue: false,
-  markGuesses: false,
-  submitGuesses: false
-}
 
 export default {
   getCachedGameState: () => gameState,
@@ -46,9 +36,17 @@ export default {
   submitGuesses,
 }
 
+function throwAndDisplayErrorIfMsg(validationFn) {
+  const msg = validationFn(gameState);
+  if (msg) {
+    userMessage.errorMsg(msg);
+    throw new Error(msg);
+  }
+}
 
 function processResponse(response) {
   if (!response) return;
+
   gameState = JSON.parse(JSON.stringify(response));
   console.log(gameState);
   lastPoll = new Date();
@@ -60,14 +58,6 @@ function processResponse(response) {
   }
 
   bindCommonFunctions(gameState);
-
-  // update action states to enable/disable in UI
-  actionStates.updatePlayer = !validations.updatePlayer(gameState);
-  actionStates.startGame = !validations.startGame(gameState);
-  actionStates.submitClue = !validations.submitClue(gameState, deviceId);
-  actionStates.markGuesses = !validations.markGuesses(gameState, deviceId);
-  actionStates.submitGuesses = !validations.submitGuesses(gameState, deviceId);
-
   document.dispatchEvent(new Event('new-server-response'));
 }
 
@@ -79,54 +69,47 @@ async function poll() {
     return;
   }
 
-  const response = await clientApiRouter.poll(deviceId);
+  const response = await clientApiRouter.poll({deviceId});
   processResponse(response);
 }
 
 
 async function newGame(wordKey) {
-  if (!actionStates.newGame) throw new Error('No newGame');
-
-  const response = await clientApiRouter.newGame(deviceId, wordKey);
+  const response = await clientApiRouter.newGame({deviceId, wordKey});
   processResponse(response);
 }
 
 async function updatePlayer(name, team) {
-  if (!actionStates.updatePlayer) throw new Error(validations.updatePlayer(gameState));
+  throwAndDisplayErrorIfMsg(validations.updatePlayer);
 
-  const response = await clientApiRouter.updatePlayer(deviceId, name, team);
+  const response = await clientApiRouter.updatePlayer({deviceId, name, team});
   processResponse(response);
 }
 
 async function startGame() {
-  if (!actionStates.startGame) throw new Error(validations.startGame(gameState));
+  throwAndDisplayErrorIfMsg(validations.startGame);
 
-  const response = await clientApiRouter.startGame(deviceId)
+  const response = await clientApiRouter.startGame({deviceId})
   processResponse(response);
 }
 
 async function submitClue(clue, count) {
-  if (!actionStates.submitClue) {
-    console.log(!gameState.isGameStarted, gameState.winner, !gameState.isTeamTurn(deviceId));
-    console.log(gameState.turn.clue, gameState.isSpymaster(deviceId));
-    throw new Error('No submitClue');
-  }
-
-//  this one's localStorage local actually would work fine
-  const response = await clientApiRouter.submitClue(deviceId, clue, count);
+  throwAndDisplayErrorIfMsg(validations.submitClue);
+  // this one's localStorage local actually would work fine
+  const response = await clientApiRouter.submitClue({deviceId, clue, count});
   processResponse(response);
 }
 
 async function markGuesses(guessIndexes) {
-  if (!actionStates.markGuesses) throw new Error('No markGuesses' + !(gameState.isSpymaster(deviceId)));
+  throwAndDisplayErrorIfMsg(validations.markGuesses);
 
-  const response = await clientApiRouter.markGuesses(deviceId, guessIndexes);
+  const response = await clientApiRouter.markGuesses({deviceId, guessIndexes});
   processResponse(response);
 }
 
 async function submitGuesses() {
-  if (!actionStates.submitGuesses) throw new Error('No submitGuesses');
+  throwAndDisplayErrorIfMsg(validations.submitGuesses);
 
-  const response = await clientApiRouter.submitGuesses(deviceId);
+  const response = await clientApiRouter.submitGuesses({deviceId});
   processResponse(response);
 }
