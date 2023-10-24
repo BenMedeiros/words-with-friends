@@ -142,12 +142,9 @@ function pooledMarkGuesses() {
 
     clientActions.markGuesses(localGuessIndexes)
       .then(() => userMessage.msg('Guesses pushed to server'))
-      .catch(e => {
-        console.error(e);
-        userMessage.errorMsg(e + 'error');
-      });
+      .catch(e => userMessage.errorMsg(e + 'error'));
     // save what was just sent to compare, and only send if different
     lastGuessesSentString = JSON.stringify(localGuessIndexes);
 
-  }, 3000);
+  }, 2000);
 }

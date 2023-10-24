@@ -19,6 +19,8 @@ document.addEventListener('new-server-response', () => {
 
   if (!gameState.isGameStarted) {
     turnMsgEl.innerText = 'Waiting to Start Game';
+  } else if (gameState.winner) {
+    turnMsgEl.innerText = 'GAME OVER - Winner - ' + gameState.winner.toUpperCase();
   } else if (!gameState.turn.clue) {
     turnMsgEl.innerText = 'Spymaster Thinking';
   } else {
@@ -34,7 +36,7 @@ export function startTimer() {
   // store the interval to clear it later
   timerIntervalId = setInterval(() => {
     const gameState = clientActions.getCachedGameState();
-    if (!(gameState && gameState.turn && gameState.turn.startTime)) {
+    if (!(gameState && gameState.turn && gameState.turn.startTime && !gameState.winner)) {
       timerEl.innerText = '';
     } else {
       const text = Math.round((new Date() - new Date(gameState.turn.startTime)) / 1000) + 's';

@@ -12,6 +12,7 @@
   padding: 0;
   border: 0;
   background-color: var(--color-menu-backdrop);
+  /*noinspection CssInvalidPropertyValue*/
   text-wrap: nowrap;
 }
 
@@ -30,7 +31,7 @@
   width: 10rem;
 }
 
-.header-bar  *::-webkit-file-upload-button {
+.header-bar *::-webkit-file-upload-button {
   display: none;
 }
 
@@ -49,6 +50,7 @@
 
 .header-bar > div {
   padding: 1rem;
+  /*noinspection CssInvalidPropertyValue*/
   text-wrap: nowrap;
 }
 
