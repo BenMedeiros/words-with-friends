@@ -1,7 +1,7 @@
 .header-bar {
   width: auto;
   display: flex;
-  flex-wrap: wrap;
+  /*flex-wrap: wrap;*/
   background-color: var(--color-menu-backdrop);
   color: var(--color-menu-border);
   overflow-x: auto;
@@ -12,6 +12,7 @@
   padding: 0;
   border: 0;
   background-color: var(--color-menu-backdrop);
+  text-wrap: nowrap;
 }
 
 .header-bar > button > * {
@@ -46,26 +47,40 @@
   color: var(--color-btn-disabled);
 }
 
+.header-bar > div {
+  padding: 1rem;
+  text-wrap: nowrap;
+}
 
-/*@media (max-aspect-ratio: 5/8) {*/
-/*    #controls-screen {*/
-/*        margin: 0;*/
-/*        display: flex;*/
-/*        flex-wrap: wrap;*/
-/*    }*/
-/*}*/
+#controls-bar label {
+  text-align: right;
+  /*display: inline-block;*/
+  /*height: 1.3rem;*/
+  /*width: 50%;*/
+  min-width: 5rem;
+  padding-right: 1rem;
+}
 
-/*#controls-screen > h3 {*/
-/*    margin: .5rem;*/
-/*}*/
+#controls-bar input, select {
+  height: 1.3rem;
+  /*width: 40%;*/
+  /*margin: .2rem 0;*/
+  /*display: inline-block;*/
+  border: 1px solid var(--color-menu-border);
+  background-color: var(--color-menu-border);
+  border-radius: .5rem;
+}
 
-/*#controls-screen > button {*/
-/*    display: block;*/
-/*    padding: .5rem;*/
-/*    margin: .5rem;*/
-/*}*/
+#controls-bar input:read-only {
+  border: 0;
+  box-shadow: none;
+  background-color: var(--color-menu-subtext);
+}
 
-/*#controls-screen button:hover:not(:disabled) {*/
-/*    border-color: darkgreen;*/
-/*    border-width: .1rem;*/
-/*}*/
+#controls-bar input::placeholder {
+  color: var(--color-menu-backdrop);
+}
+
+#controls-bar input:hover, select:hover {
+  border: 1px solid black;
+}

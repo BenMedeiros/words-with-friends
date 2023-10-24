@@ -185,4 +185,24 @@ export class LabelInputType {
       this.element.value = value;
     }
   }
+
+  // true - readOnly, false - editable
+  readOnlyIf(bool) {
+    if (bool) {
+      if (!this.readOnly) {
+        this.readOnly = true;
+        this.element.readOnly = true;
+      }
+    } else {
+      if (this.readOnly) {
+        this.readOnly = false;
+        this.element.readOnly = false;
+      }
+    }
+  }
+
+  setPlaceholder(str){
+    this.placeholder = str;
+    this.element.placeholder = this.placeholder;
+  }
 }

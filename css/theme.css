@@ -36,6 +36,10 @@ body {
   background-blend-mode: multiply;
 }
 
+main {
+  text-align: -webkit-center;
+}
+
 i {
   vertical-align: bottom;
 }
@@ -151,6 +155,8 @@ Game board and word box formatting for gameboard.js
 #gameboard {
   display: flex;
   flex-wrap: wrap;
+  max-width: 60rem;
+  border: solid;
 }
 
 .word {

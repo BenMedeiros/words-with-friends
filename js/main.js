@@ -8,7 +8,7 @@ import {updateWordBoxes} from "./app/gameboard.js";
 import {addFakePlayers, createPlayerSelector} from "./app/playerSelector.js";
 import validations from "../server/client/validations.js";
 import userMessage from "./app/userMessage.js";
-import {createSubmitGuessesBtn} from "./app/playerActions.js";
+import {createClueElement, createSubmitGuessesBtn} from "./app/playerActions.js";
 import {startTimer} from "./app/teamAndTimer.js";
 
 const navBarEl = document.getElementById("navigation-bar");
@@ -51,4 +51,6 @@ createPlayerSelector();
 start().then(() => {
   // runAllTests.then();
   createSubmitGuessesBtn();
+  createClueElement();
+
 });
