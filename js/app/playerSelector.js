@@ -1,10 +1,7 @@
 'use strict';
 
-
-import {LabelInputType} from "../../html/tinyComponents/LabelInputType.js";
 import {SelectInputType} from "../../html/tinyComponents/SelectInputType.js";
 import clientActions from "../../server/client/clientActions.js";
-import {ButtonType} from "../../html/tinyComponents/ButtonType.js";
 import userMessage from "./userMessage.js";
 
 /*
@@ -19,10 +16,12 @@ export function createPlayerSelector() {
 
   console.log(playerSelectInput.element);
   document.addEventListener('new-server-response', () => {
+    const gameState = clientActions.getCachedGameState();
     //  SelectInputType will handle checking for changes
     const playersMap = {};
-    for (const player of clientActions.getCachedGameState().players) {
-      playersMap[player.deviceId] = `(${player.deviceId}) ${player.name} - ${player.team.toUpperCase()}`;
+    for (const player of gameState.players) {
+      playersMap[player.deviceId] = `(${player.deviceId}) ${player.name} - ${player.team.toUpperCase()}`
+        + (gameState.isSpymaster(player.deviceId) ? ' SPY' : '');
     }
     playerSelectInput.setValuesMap(playersMap);
   });

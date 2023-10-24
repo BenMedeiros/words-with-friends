@@ -24,6 +24,9 @@
   --color-btn-disabled: #545759;
   --color-btn-delete: #d02f2f;
   --color-btn-delete-hover: #d11616;
+
+  /* change the size of word boxes and font*/
+  --zoom-size: 1;
 }
 
 body {
@@ -127,7 +130,7 @@ Messages and timers controls by the userMessage.js
 
 #team-msg-wrapper {
   display: flex;
-  width: 40%;
+  max-width: 60rem;
   border: solid;
   align-items: center;
   justify-content: space-evenly;
@@ -154,11 +157,12 @@ Game board and word box formatting for gameboard.js
   border: solid black;
   background-color: var(--color-menu-backdrop);
   color: var(--color-menu-subtext);
-  height: 5rem;
-  width: 10rem;
-  padding: 1rem;
+  height: calc(5rem * var(--zoom-size));
+  width: calc(7rem * var(--zoom-size));
+  flex-grow: 1;
+  max-width: calc(15rem * var(--zoom-size));;
   /* prob need to auto scale this depending on word length*/
-  font-size: 2rem;
+  font-size: calc(1.4rem * var(--zoom-size));
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
@@ -168,18 +172,23 @@ Game board and word box formatting for gameboard.js
 .word.clicked {
   color: var(--color-backdrop-hover);
 }
+
 .word.red {
   background-color: red;
 }
+
 .word.blue {
   background-color: blue;
 }
+
 .word.neutral {
   background-color: yellow;
 }
+
 .word.death {
   background-color: black;
 }
+
 .word:hover:not(.red, .blue, .neutral, .death) {
   border-color: green;
 }

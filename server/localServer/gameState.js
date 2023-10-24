@@ -35,7 +35,7 @@ export function initializeGameState() {
     clue: null,
     count: 0
   };
-  gameState.wordsPerGame = 20;
+  gameState.wordsPerGame = 24;
   // which word list is being used
   gameState.wordKey = null;
   // list of available wordKeys

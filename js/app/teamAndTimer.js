@@ -5,14 +5,26 @@ import clientActions from "../../server/client/clientActions.js";
 const teamTurnEl = document.getElementById("team-turn");
 const teamTurnColorEl = document.getElementById("team-turn-color");
 const timerEl = document.getElementById("timer");
+const turnMsgEl = document.getElementById("turn-msg");
+
 
 document.addEventListener('new-server-response', () => {
-  const team = clientActions.getCachedGameState().getTurnTeam();
+  const gameState = clientActions.getCachedGameState();
+  const team = gameState.getTurnTeam();
 
   if (team !== teamTurnColorEl.style.backgroundColor) {
     teamTurnColorEl.style.backgroundColor = team;
     teamTurnEl.innerText = team.toUpperCase() + ' Turn';
   }
+
+  if (!gameState.isGameStarted) {
+    turnMsgEl.innerText = 'Waiting to Start Game';
+  } else if (!gameState.turn.clue) {
+    turnMsgEl.innerText = 'Spymaster Thinking';
+  } else {
+    turnMsgEl.innerText = 'Team Guessing';
+  }
+
 });
 
 let timerIntervalId = null;

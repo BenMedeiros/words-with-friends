@@ -152,7 +152,9 @@ function submitGuesses(deviceId) {
   }
 
   if (guessIndexes.length === 0) throw new Error('Must have guesses to submit.');
-  if (guessIndexes.length > gameState.turn.count) throw new Error('Max guesses allowed: ' + gameState.turn.count);
+  if (guessIndexes.length > gameState.turn.count) {
+    throw new Error('Max guesses allowed for this clue: ' + gameState.turn.count);
+  }
 
   // update the wordsStates with actuals from wordsGoals
   for (const guessIndex of guessIndexes) {
