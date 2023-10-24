@@ -24,7 +24,7 @@
   text-decoration: none;
   border: .1rem solid var(--color-menu-backdrop);
   border-radius: .5rem;
-  padding: .5rem 1rem;
+  padding: .5rem .5rem;
 }
 
 .header-bar > button > input {
@@ -85,4 +85,19 @@
 
 #controls-bar input:hover, select:hover {
   border: 1px solid black;
+}
+
+#clue-lbl-0 {
+  width: 10rem;
+}
+
+#clue-count-lbl-1 {
+  width: 4rem;
+}
+
+/* on small screen, just hide disabled buttons rather than graying*/
+@media only screen and (max-width: 600px) {
+  #controls-bar > button:disabled {
+    display: none;
+  }
 }

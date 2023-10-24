@@ -95,5 +95,9 @@ function checkGameOver() {
     }
   }
 
-  if (gameState.winner) gameState.gameEndTime = new Date();
+  if (gameState.winner) {
+    gameState.gameEndTime = new Date();
+    gameState.isGameStarted = false;
+  }
+
 }

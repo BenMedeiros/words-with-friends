@@ -14,7 +14,7 @@ document.addEventListener('new-server-response', () => {
 
   if (team !== teamTurnColorEl.style.backgroundColor) {
     teamTurnColorEl.style.backgroundColor = team;
-    teamTurnEl.innerText = team.toUpperCase() + ' Turn';
+    teamTurnEl.innerText = team.toUpperCase() + ' Turn ' + gameState.turn.turn;
   }
 
   if (!gameState.isGameStarted) {
@@ -39,7 +39,7 @@ export function startTimer() {
     if (!(gameState && gameState.turn && gameState.turn.startTime && !gameState.winner)) {
       timerEl.innerText = '';
     } else {
-      const text = Math.round((new Date() - new Date(gameState.turn.startTime)) / 1000) + 's';
+      const text =  Math.round((new Date() - new Date(gameState.turn.startTime)) / 1000) + 's';
       if (text !== timerEl.innerText) timerEl.innerText = text;
     }
   }, 100);

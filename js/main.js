@@ -10,6 +10,7 @@ import validations from "../server/client/validations.js";
 import userMessage from "./app/userMessage.js";
 import {createClueElement, createSubmitGuessesBtn} from "./app/playerActions.js";
 import {startTimer} from "./app/teamAndTimer.js";
+import winScreen from "./app/winScreen.js";
 
 const navBarEl = document.getElementById("navigation-bar");
 const mainEl = document.getElementById("main");
@@ -19,13 +20,13 @@ setInterval(clientActions.poll, 5000);
 
 async function start() {
   await clientActions.poll();
+  startTimer();
 
   for (const key of clientActions.getCachedGameState().wordLists) {
     new ButtonType('new-game' + key, 'New Game - ' + key,
       async () => {
         await clientActions.newGame(key);
         updateWordBoxes();
-        startTimer();
       },
       false, null, navBarEl);
   }
@@ -39,9 +40,18 @@ async function start() {
   const startBtnType = new ButtonType('start-game', 'Start Game',
     clientActions.startGame,
     true, null, navBarEl);
+
   document.addEventListener('new-server-response', () => {
-    fakePlayersBtnType.disableIf(clientActions.getCachedGameState().players.length > 3);
+    const gameState = clientActions.getCachedGameState();
+    fakePlayersBtnType.disableIf(gameState.players.length > 3);
     startBtnType.disableIf(validations.startGame(clientActions.getCachedGameState()));
+
+    if(gameState.winner) {
+      winScreen.createWinScreen();
+    }else if(gameState.isGameStarted){
+      winScreen.closeWinScreen();
+    }
+
   });
 
 }
@@ -50,7 +60,7 @@ createPlayerSelector();
 
 start().then(() => {
   // runAllTests.then();
-  createSubmitGuessesBtn();
   createClueElement();
+  createSubmitGuessesBtn();
 
 });

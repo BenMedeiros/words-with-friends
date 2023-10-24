@@ -39,7 +39,21 @@ export class SelectInputType {
       createOptionElement(this.element, key, displayValue);
     }
 
-    parentEl.appendChild(this.element);
+    if (!this.labelText) {
+      parentEl.appendChild(this.element);
+    } else {
+      if (this.labelText) {
+        const divEl = document.createElement("div");
+
+        const labelEl = document.createElement("label");
+        labelEl.htmlFor = this.id;
+        labelEl.innerText = this.labelText;
+
+        divEl.appendChild(labelEl);
+        divEl.appendChild(this.element);
+        parentEl.appendChild(divEl);
+      }
+    }
   }
 
   setValuesMap(valuesMap) {

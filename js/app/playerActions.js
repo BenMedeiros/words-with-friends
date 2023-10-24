@@ -24,37 +24,48 @@ export function createSubmitGuessesBtn() {
 
 
 export function createClueElement() {
-  const lblInputType = new LabelInputType('clue', 'string', 'Clue',
+  const clueInputType = new LabelInputType('clue', 'string', 'Clue',
     null, undefined, true);
-  lblInputType.createElementIn(document.getElementById("controls-bar"));
+  clueInputType.createElementIn(document.getElementById("controls-bar"));
+
+  const countInputType = new LabelInputType('clue-count', 'integer', '# Words',
+    null, 1, true);
+  countInputType.createElementIn(document.getElementById("controls-bar"));
 
   const btn = new ButtonType('submit-clue', 'Submit Clue',
     () => {
-      const count = 12;
-      //TODO add real code for count
-      clientActions.submitClue(lblInputType.getValue(), count)
-        .then(() => userMessage.msg('Clue pushed'))
-        .catch(e => userMessage.errorMsg(e));
+      const clueUserInput = clueInputType.getValue();
+      if (clueUserInput && clueUserInput.trim() !== '') {
+        clientActions.submitClue(clueUserInput, countInputType.getValue())
+          .then(() => userMessage.msg('Clue pushed'))
+          .catch(e => userMessage.errorMsg(e));
+      } else {
+        userMessage.errorMsg('Clue cant be blank.');
+      }
+
     }, true, null,
     document.getElementById("controls-bar"));
 
 
   document.addEventListener('new-server-response', () => {
     const canSubmitClue = !validations.submitClue(clientActions.getCachedGameState());
-    lblInputType.readOnlyIf(!canSubmitClue);
+    clueInputType.readOnlyIf(!canSubmitClue);
+    countInputType.readOnlyIf(!canSubmitClue);
     btn.disableIf(!canSubmitClue);
 
     if (canSubmitClue) {
-      lblInputType.setPlaceholder('write a clue');
+      clueInputType.setPlaceholder('write a clue');
     } else {
-      lblInputType.setPlaceholder('waiting');
+      clueInputType.setPlaceholder('waiting');
     }
 
     const turn = clientActions.getCachedGameState().turn;
     if (turn.clue) {
-      lblInputType.setValue(turn.clue)
-    }else{
-      lblInputType.setValue(null);
+      clueInputType.setValue(turn.clue)
+      countInputType.setValue(turn.count);
+    } else {
+      clueInputType.setValue(null);
+      countInputType.setValue(null);
     }
 
   });
