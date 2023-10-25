@@ -118,6 +118,9 @@ Messages and timers controls by the userMessage.js
 #msg {
   background-color: var(--color-menu-backdrop-hover);
   color: var(--color-outline);
+  overflow-x: auto;
+  /*noinspection CssInvalidPropertyValue*/
+  text-wrap: nowrap;
 }
 
 #error-msg {

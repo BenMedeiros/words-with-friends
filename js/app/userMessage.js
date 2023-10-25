@@ -15,7 +15,7 @@ let msgCounter = 0;
 export default {
   msg: (msg) => {
     msgEl.innerText = `[${msgCounter++}] ${msg}, ${msgEl.innerText}`;
-    setTimeout(trimMsg, 5000);
+    setTimeout(trimMsg, 6000);
   },
   errorMsg: (msg) => {
     errorMsgEl.innerText = msg;
@@ -36,7 +36,7 @@ function clearErrorMsg() {
 
 function trimMsg() {
   const lastComma = msgEl.innerText.lastIndexOf(', ');
-  if (lastComma > 30) {
+  if (lastComma > 50) {
     msgEl.innerText = msgEl.innerText.substring(0, lastComma);
   }
 }
