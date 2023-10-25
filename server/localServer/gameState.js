@@ -4,21 +4,16 @@ import {getLastSavedGameState, saveGameState} from "./dbLocalStorage.js";
 import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 
 export const gameState = await getLastSavedGameState();
-if(Object.keys(gameState).length === 0){
- console.log('no previous game state so initializing');
- initializeGameState();
+if (Object.keys(gameState).length === 0) {
+  console.log('no previous game state so initializing');
+  initializeGameState();
 }
 bindCommonFunctions(gameState);
 
 // starts a new game
 export function initializeGameState() {
-  gameState.players = [
-    // {
-    //   deviceId: 81233, // random unique device id assigned by server
-    //   name: 'player1',
-    //   team: 'red'
-    // }
-  ];
+  // use the same players if already there
+  gameState.players = gameState.players || [];
   // current game spymasters
   gameState.spymasterBlue = null;
   gameState.spymasterRed = null;
@@ -56,7 +51,6 @@ export function initializeGameState() {
 
   saveGameState(gameState).then();
 }
-
 
 
 export function nextTurn() {

@@ -10,13 +10,13 @@ const namespace = 'words-with-friends.';
 export async function getDeviceIdCounter() {
   const deviceIdCounter = localStorage.getItem(namespace + 'deviceIdCounter');
   if (!deviceIdCounter) {
-    setDeviceIdCounter(100).then();
+    saveDeviceIdCounter(100).then();
     return 100;
   }
   return deviceIdCounter;
 }
 
-export async function setDeviceIdCounter(deviceId) {
+export async function saveDeviceIdCounter(deviceId) {
   localStorage.setItem(namespace + 'deviceIdCounter', deviceId);
 }
 
@@ -44,4 +44,17 @@ export async function getWordLists(){
   delete wordLists.id;
   console.log('words loaded from localStorage');
   return wordLists;
+}
+
+export async function getPlayerList(){
+  let playerList = localStorage.getItem(namespace+'playerList');
+  if(!playerList) return {};
+  playerList = JSON.parse(playerList);
+  delete playerList.id;
+  console.log('players loaded from localStorage');
+  return playerList;
+}
+
+export async function savePlayerList(playerList) {
+  localStorage.setItem(namespace + 'playerList', playerList);
 }

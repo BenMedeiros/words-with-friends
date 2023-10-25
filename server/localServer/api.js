@@ -6,7 +6,7 @@
 * */
 import {gameState, initializeGameState, nextTurn} from "./gameState.js";
 import {initializeWordLists, selectNewGameWords} from "./wordsManager.js";
-import {getDeviceIdCounter, setDeviceIdCounter} from "./dbLocalStorage.js";
+import {getSavedPlayer, updateSavedPlayer} from "./playerManager.js";
 
 export default {
   newGame,
@@ -18,7 +18,6 @@ export default {
   poll
 }
 
-let deviceIdCounter = await getDeviceIdCounter();
 initializeWordLists();
 
 function newGame(deviceId, wordKey) {
@@ -32,20 +31,21 @@ function newGame(deviceId, wordKey) {
 // players add themselves to teams, assign a deviceId first time calling api
 // can't update player during game, but can add new player
 function updatePlayer(deviceId, name, team) {
-  if (!deviceId) {
-    deviceId = deviceIdCounter++;
-    setDeviceIdCounter(deviceIdCounter).then();
-  }
+  const savedPlayer = getSavedPlayer(deviceId);
+  updateSavedPlayer(savedPlayer, name);
 
-  const existingPlayer = gameState.players.find(el => el.deviceId === deviceId);
-  if (existingPlayer) {
+  const playerAlreadyInGame = gameState.players.find(el => el.deviceId === deviceId);
+  if (playerAlreadyInGame) {
     if (gameState.isGameStarted) throw new Error('Cant update player during game');
-    existingPlayer.team = team;
-    existingPlayer.name = name;
-    return;
+    playerAlreadyInGame.team = team;
+    playerAlreadyInGame.name = name;
+  } else {
+    gameState.players.push({
+      deviceId: savedPlayer.deviceId,
+      name: savedPlayer.name,
+      team: team
+    });
   }
-
-  gameState.players.push({deviceId, name, team});
 
   return poll(deviceId);
 }
@@ -139,11 +139,12 @@ function submitGuesses(deviceId) {
   validateIsTurn(deviceId);
   if (gameState.isSpymaster(deviceId)) throw new Error('spymaster cant submit the guesses.');
   // includes spymaster as player
-  const playersInTurn = gameState.isRedTurn ? gameState.getRedPlayers().length : gameState.getBluePlayers().length;
+  const playersInTurn = gameState.turn.isRedTurn ? gameState.getRedPlayers().length : gameState.getBluePlayers().length;
 
   const guessIndexes = [];
   for (let i = 0; i < gameState.wordsStates.length; i++) {
     if (!Array.isArray(gameState.wordsStates[i])) continue;
+    console.log('submit guesss api', gameState.wordsStates[i].length, gameState.getRedPlayers(), gameState.getBluePlayers());
     if (gameState.wordsStates[i].length !== playersInTurn - 1) {
       throw new Error('All players must agree on the vote.');
     }
@@ -180,6 +181,6 @@ function poll(deviceId) {
   }
 
   console.log('server poll', deviceId, gameState.getPlayerById(deviceId));
-  response.thisPlayer = gameState.getPlayerById(deviceId);
+  response.thisPlayer = gameState.getPlayerById(deviceId) || getSavedPlayer(deviceId);
   return response;
 }

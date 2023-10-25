@@ -44,7 +44,7 @@ export function updateWordBoxes() {
     }
 
     // create new word tiles
-    for (let i = 0; i < gameState.wordsPerGame; i++) {
+    for (let i = 0; i < gameState.words.length; i++) {
       const div = document.createElement('div');
       div.id = 'word-' + i;
       div.classList.add('word');
@@ -122,10 +122,12 @@ function checkClearLocalGuesses() {
 
   if (gameState.getThisDeviceId() !== localGuessDeviceId) {
     localGuessDeviceId = gameState.getThisDeviceId();
+    lastGuessesSentString = JSON.stringify(localGuessIndexes);
     localGuessIndexes.length = 0;
   }
   if (gameState.turn.turn !== localGuessTurn) {
     localGuessTurn = gameState.turn.turn;
+    lastGuessesSentString = JSON.stringify(localGuessIndexes);
     localGuessIndexes.length = 0;
   }
 }

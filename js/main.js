@@ -22,14 +22,21 @@ async function start() {
   await clientActions.poll();
   startTimer();
 
-  for (const key of clientActions.getCachedGameState().wordLists) {
-    new ButtonType('new-game' + key, 'New Game - ' + key,
-      async () => {
-        await clientActions.newGame(key);
-        updateWordBoxes();
-      },
-      false, null, navBarEl);
+  if(!clientActions.getCachedGameState().isGameStarted){
+  //  win screen is my setting screen since i'm lazy rn
+    winScreen.createWinScreen();
   }
+
+  const deviceId = localStorage.getItem('words-with-friends.deviceId');
+
+  // for (const key of clientActions.getCachedGameState().wordLists) {
+  //   new ButtonType('new-game' + key, 'New Game - ' + key,
+  //     async () => {
+  //       await clientActions.newGame(key);
+  //       updateWordBoxes();
+  //     },
+  //     false, null, navBarEl);
+  // }
   // fake players button
   const fakePlayersBtnType = new ButtonType('add-fake-players', 'Add Fake Players',
     addFakePlayers,
