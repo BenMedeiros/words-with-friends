@@ -20,6 +20,7 @@ export function selectNewGameWords(wordKey) {
   if (allWords.length < gameState.wordsPerGame) {
     throw new Error(`Word list ${wordKey} only has ${allWords.length} words, so can't play game with ${gameState.wordsPerGame} words.`);
   }
+  gameState.wordKey = wordKey;
   // choose semi-random set of words
   gameState.words = allWords.sort((a, b) => 0.5 - Math.random()).slice(0, gameState.wordsPerGame);
   gameState.wordsStates = new Array(gameState.wordsPerGame).fill(null);

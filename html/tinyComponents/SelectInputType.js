@@ -36,7 +36,7 @@ export class SelectInputType {
     this.element.name = this.name;
 
     for (const [key, displayValue] of Object.entries(this.valuesMap)) {
-      createOptionElement(this.element, key, displayValue);
+      createOptionElement(this.element, key, displayValue, this.initialValue === key);
     }
 
     if (!this.labelText) {
@@ -73,7 +73,7 @@ export class SelectInputType {
     // add the new keys that are needed, and update displayValues that have changed
     for (const [newKey, newDisplayValue] of Object.entries(valuesMap)) {
       if (this.valuesMap[newKey] === undefined) {
-        createOptionElement(this.element, newKey, newDisplayValue);
+        createOptionElement(this.element, newKey, newDisplayValue, this.initialValue === newKey);
       } else if (this.valuesMap[newKey] !== newDisplayValue) {
         const elToUpdate = document.getElementById(this.id + '-' + newKey);
         elToUpdate.innerText = newDisplayValue;
@@ -96,14 +96,25 @@ export class SelectInputType {
   getValue() {
     return this.element.value;
   }
+  // selects the value from valuesMap, will not do anything if key doesn't exist
+  selectValue(key) {
+    const optionEl = document.getElementById(this.id + '-' + key) ;
+    if(!optionEl){
+      console.log('optionEl for key doesnt exist', key);
+      return;
+    }
+
+    optionEl.selected = true;
+  }
 
 }
 
-function createOptionElement(selectEl, key, displayValue) {
+function createOptionElement(selectEl, key, displayValue, isSelected) {
   const optionEl = document.createElement('option');
   optionEl.id = selectEl.id + '-' + key;
   optionEl.value = key;
   optionEl.innerText = displayValue;
+  if(isSelected) optionEl.selected = true;
   selectEl.appendChild(optionEl);
 }
 

@@ -13,8 +13,7 @@ const playerSelectInput = new SelectInputType('player', 'Player', null,
 
 export function createPlayerSelector() {
   playerSelectInput.createElementIn(document.getElementById("navigation-bar"));
-
-  console.log(playerSelectInput.element);
+  // update the players drop down on every response
   document.addEventListener('new-server-response', () => {
     const gameState = clientActions.getCachedGameState();
     //  SelectInputType will handle checking for changes
@@ -24,21 +23,13 @@ export function createPlayerSelector() {
         + (gameState.isSpymaster(player.deviceId) ? ' SPY' : '');
     }
     playerSelectInput.setValuesMap(playersMap);
+    if (Number(playerSelectInput.getValue()) !== Number(gameState.thisPlayer.deviceId)) {
+      playerSelectInput.selectValue(gameState.thisPlayer.deviceId);
+    }
   });
 
   playerSelectInput.element.onchange = () => {
     userMessage.msg('Player Change ' + playerSelectInput.getValue());
     clientActions.bindDeviceId(Number(playerSelectInput.getValue()));
   };
-}
-
-export async function addFakePlayers() {
-  clientActions.bindDeviceId(1);
-  await clientActions.updatePlayer('ben', 'red');
-  clientActions.bindDeviceId(2);
-  await clientActions.updatePlayer('sam', 'red');
-  clientActions.bindDeviceId(3);
-  await clientActions.updatePlayer('dave', 'blue');
-  clientActions.bindDeviceId(4);
-  await clientActions.updatePlayer('paul', 'blue');
 }

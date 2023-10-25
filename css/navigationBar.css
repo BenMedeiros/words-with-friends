@@ -79,6 +79,10 @@
   background-color: var(--color-menu-subtext);
 }
 
+#controls-bar input[type="number"] {
+  width: 5rem;
+}
+
 #controls-bar input::placeholder {
   color: var(--color-menu-backdrop);
 }

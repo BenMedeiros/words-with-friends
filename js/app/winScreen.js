@@ -46,10 +46,10 @@ function createWinScreen() {
   idI.createElementIn(winScreenElement);
   const nameI = new LabelInputType('name', 'string', 'Name', gameState.thisPlayer.name, 'your name', false);
   nameI.createElementIn(winScreenElement);
-  const teamI = new SelectInputType('team', 'Team', null, {red: 'red', blue: 'blue'}, null, false);
+  const teamI = new SelectInputType('team', 'Team', gameState.thisPlayer.team, {red: 'red', blue: 'blue'}, null, false);
   teamI.createElementIn(winScreenElement);
   //game config
-  const wordKeyI = new SelectInputType('wordKey', 'Word List', null, wordsMap, null, false);
+  const wordKeyI = new SelectInputType('wordKey', 'Word List', gameState.wordKey, wordsMap, null, false);
   wordKeyI.createElementIn(winScreenElement);
 
   // allow player to update their team and the game wordKey
