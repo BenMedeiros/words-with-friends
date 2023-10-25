@@ -3,11 +3,17 @@
 import {getLastSavedGameState, saveGameState} from "./dbLocalStorage.js";
 import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 
-export const gameState = await getLastSavedGameState();
+export const gameState = await getLastSavedGameState() || {};
+
 if (Object.keys(gameState).length === 0) {
   console.log('no previous game state so initializing');
   initializeGameState();
+} else if (!gameState.isGameStarted || gameState.winner) {
+// if last game was done or never started, it's useless
+  console.log('no previous valid game state');
+  initializeGameState();
 }
+
 bindCommonFunctions(gameState);
 
 // starts a new game

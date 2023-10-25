@@ -166,7 +166,8 @@ Game board and word box formatting for gameboard.js
   border: solid black;
   background-color: var(--color-menu-backdrop);
   color: var(--color-menu-subtext);
-  height: calc(5rem * var(--zoom-size));
+  min-height: calc(4rem * var(--zoom-size));
+  height: auto;
   width: calc(7rem * var(--zoom-size));
   flex-grow: 1;
   max-width: calc(15rem * var(--zoom-size));;

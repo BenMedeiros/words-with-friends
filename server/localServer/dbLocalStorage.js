@@ -22,13 +22,9 @@ export async function saveDeviceIdCounter(deviceId) {
 
 export async function getLastSavedGameState() {
   let lastSave = localStorage.getItem(namespace + 'lastGameState');
-  if (!lastSave) return {};
+  if (!lastSave) return;
   lastSave = JSON.parse(lastSave);
-  // if last game was done or never started, it's useless
-  if (!lastSave.isGameStarted || lastSave.winner) {
-    console.log('no previous valid game state');
-    return {};
-  }
+
   console.log('last game state found and loaded.');
   return lastSave;
 }
@@ -40,6 +36,7 @@ export async function saveGameState(gameState){
 
 export async function getWordLists(){
   let wordLists = localStorage.getItem(namespace+'words');
+  if(!wordLists) return;
   wordLists = JSON.parse(wordLists);
   delete wordLists.id;
   console.log('words loaded from localStorage');
@@ -48,7 +45,7 @@ export async function getWordLists(){
 
 export async function getPlayerList(){
   let playerList = localStorage.getItem(namespace+'playerList');
-  if(!playerList) return {};
+  if(!playerList) return;
   playerList = JSON.parse(playerList);
   delete playerList.id;
   console.log('players loaded from localStorage');

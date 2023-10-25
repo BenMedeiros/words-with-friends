@@ -6,7 +6,7 @@
 
 import {getDeviceIdCounter, getPlayerList, saveDeviceIdCounter, savePlayerList} from "./dbLocalStorage.js";
 
-let fullPlayerList = await getPlayerList();
+let fullPlayerList = await getPlayerList() || {};
 
 let deviceIdCounter = await getDeviceIdCounter();
 
@@ -30,8 +30,8 @@ export function getSavedPlayer(deviceId) {
 // looks to update the player name if needed and persists to DB
 export function updateSavedPlayer(savedPlayer, name) {
   if (savedPlayer.name !== name) {
-    savedPlayer.name = name;
-    fullPlayerList[savedPlayer.deviceId].name = name;
+    savedPlayer.name = name || '';
+    fullPlayerList[savedPlayer.deviceId].name = name || '';
     savePlayerList(fullPlayerList).then();
   }
 }

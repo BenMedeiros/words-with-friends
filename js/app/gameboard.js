@@ -16,8 +16,6 @@ let localGuessIndexes = [];
 let localGuessTurn = null;
 let localGuessDeviceId = null;
 
-document.addEventListener('new-server-response', updateWordBoxes);
-
 // pool the markGuesses to prevent tons of api requests
 let timeoutMarkGuesses = null;
 let lastGuessesSentString = null;
@@ -150,12 +148,12 @@ function checkClearLocalGuesses() {
 
   if (gameState.getThisDeviceId() !== localGuessDeviceId) {
     localGuessDeviceId = gameState.getThisDeviceId();
-    lastGuessesSentString = JSON.stringify(localGuessIndexes);
+    lastGuessesSentString = null;
     localGuessIndexes.length = 0;
   }
   if (gameState.turn.turn !== localGuessTurn) {
     localGuessTurn = gameState.turn.turn;
-    lastGuessesSentString = JSON.stringify(localGuessIndexes);
+    lastGuessesSentString = null;
     localGuessIndexes.length = 0;
   }
 }

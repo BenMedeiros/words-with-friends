@@ -24,7 +24,7 @@ export default {
   // shouldn't need to use this except during testing
   bindDeviceId: (spoofId) => {
     deviceId = spoofId;
-    poll().then();
+    poll(true).then();
   },
   poll,
   newGame,
@@ -62,17 +62,15 @@ function processResponse(response) {
 }
 
 // polls the server for gameState, will prevent polling if gameState is <15s old
-async function poll() {
+async function poll(forcePoll = false) {
   // only poll if the data is likely stale
-  if (new Date() - lastPoll < 15 * 1000) {
-    console.log('supressing poll');
-    return;
+  if(forcePoll || !lastPoll || new Date() - lastPoll > 15 * 1000){
+    const response = await clientApiRouter.poll({deviceId});
+    processResponse(response);
+  }else{
+    console.log('Skipping this polling.');
   }
-
-  const response = await clientApiRouter.poll({deviceId});
-  processResponse(response);
 }
-
 
 async function newGame(wordKey) {
   const response = await clientApiRouter.newGame({deviceId, wordKey});

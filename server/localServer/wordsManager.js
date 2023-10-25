@@ -5,6 +5,13 @@ import {gameState} from "./gameState.js";
 import {getWordLists} from "./dbLocalStorage.js";
 
 let wordLists = await getWordLists();
+if (!wordLists) {
+//  no word list for some reason so create a temp one
+  wordLists = {numbers: new Array(100)};
+  for (let i = 0; i < wordLists.numbers.length; i++) {
+    wordLists.numbers[i] = String(i);
+  }
+}
 // {wordKey: [words]}
 
 // populate the wordLists that are available to play from db

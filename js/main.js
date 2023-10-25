@@ -7,6 +7,7 @@ import validations from "../server/client/validations.js";
 import {createClueElement, createSubmitGuessesBtn} from "./app/playerActions.js";
 import {startTimer} from "./app/teamAndTimer.js";
 import winScreen from "./app/winScreen.js";
+import {updateWordBoxes} from "./app/gameboard.js";
 
 // how often to background try to poll, clientActions will prevent too unneccessary polling
 setInterval(clientActions.poll, 5000);
@@ -60,5 +61,8 @@ start().then(() => {
 
   createClueElement();
   createSubmitGuessesBtn();
+
+  document.addEventListener('new-server-response', updateWordBoxes);
+
 
 });
