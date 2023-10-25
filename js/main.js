@@ -12,9 +12,6 @@ import {createClueElement, createSubmitGuessesBtn} from "./app/playerActions.js"
 import {startTimer} from "./app/teamAndTimer.js";
 import winScreen from "./app/winScreen.js";
 
-const navBarEl = document.getElementById("navigation-bar");
-const mainEl = document.getElementById("main");
-
 // how often to background try to poll, clientActions will prevent too unneccessary polling
 setInterval(clientActions.poll, 5000);
 
@@ -27,16 +24,6 @@ async function start() {
     winScreen.createWinScreen();
   }
 
-  const deviceId = localStorage.getItem('words-with-friends.deviceId');
-
-  // for (const key of clientActions.getCachedGameState().wordLists) {
-  //   new ButtonType('new-game' + key, 'New Game - ' + key,
-  //     async () => {
-  //       await clientActions.newGame(key);
-  //       updateWordBoxes();
-  //     },
-  //     false, null, navBarEl);
-  // }
   // fake players button
   const fakePlayersBtnType = new ButtonType('add-fake-players', 'Add Fake Players',
     addFakePlayers,
@@ -46,7 +33,7 @@ async function start() {
   // start button
   const startBtnType = new ButtonType('start-game', 'Start Game',
     clientActions.startGame,
-    true, null, navBarEl);
+    true, null, document.getElementById("navigation-bar"));
 
   document.addEventListener('new-server-response', () => {
     const gameState = clientActions.getCachedGameState();
@@ -67,6 +54,12 @@ createPlayerSelector();
 
 start().then(() => {
   // runAllTests.then();
+
+  const gameConfigI = new ButtonType('game-config', 'Game Config',
+    winScreen.createWinScreen, false, null,
+    document.getElementById("navigation-bar"));
+
+
   createClueElement();
   createSubmitGuessesBtn();
 

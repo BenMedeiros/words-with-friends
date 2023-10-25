@@ -36,10 +36,14 @@ function updatePlayer(deviceId, name, team) {
 
   const playerAlreadyInGame = gameState.players.find(el => el.deviceId === deviceId);
   if (playerAlreadyInGame) {
-    if (gameState.isGameStarted) throw new Error('Cant update player during game');
+    console.log('player already in gaem');
+    if (gameState.isGameStarted && playerAlreadyInGame.team !== team) {
+      throw new Error('Cant update player during game');
+    }
     playerAlreadyInGame.team = team;
     playerAlreadyInGame.name = name;
   } else {
+    console.log('player not in game');
     gameState.players.push({
       deviceId: savedPlayer.deviceId,
       name: savedPlayer.name,
@@ -181,6 +185,12 @@ function poll(deviceId) {
   }
 
   console.log('server poll', deviceId, gameState.getPlayerById(deviceId));
-  response.thisPlayer = gameState.getPlayerById(deviceId) || getSavedPlayer(deviceId);
-  return response;
+  const playerAlreadyInGame = gameState.getPlayerById(deviceId);
+  if (playerAlreadyInGame) {
+    response.thisPlayer = playerAlreadyInGame;
+    return response;
+  } else {
+    const newPlayer = getSavedPlayer(deviceId);
+    return updatePlayer(newPlayer.deviceId, newPlayer.name, gameState.getTeamLessPlayers());
+  }
 }

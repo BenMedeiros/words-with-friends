@@ -6,23 +6,26 @@
 
 
 // simple common functions for the gameState
-export function bindCommonFunctions(gameState) {
-  gameState.getThisDeviceId = () => gameState.thisPlayer ? gameState.thisPlayer.deviceId : null;
-  gameState.getPlayerById = (deviceId) => gameState.players.find(el => el.deviceId === deviceId);
-  gameState.isSpymaster = (deviceId) => (gameState.spymasterRed && gameState.spymasterRed.deviceId === deviceId)
-    || (gameState.spymasterBlue && gameState.spymasterBlue.deviceId === deviceId);
-  gameState.getRedPlayers = () => gameState.players.filter(el => el.team === 'red');
-  gameState.getBluePlayers = () => gameState.players.filter(el => el.team === 'blue');
+export function bindCommonFunctions(gs) {
+  gs.getThisDeviceId = () => gs.thisPlayer ? gs.thisPlayer.deviceId : null;
+  gs.getPlayerById = (deviceId) => gs.players.find(el => el.deviceId === deviceId);
+  gs.isSpymaster = (deviceId) => (gs.spymasterRed && gs.spymasterRed.deviceId === deviceId)
+    || (gs.spymasterBlue && gs.spymasterBlue.deviceId === deviceId);
 
-  gameState.getCountRedGoal = () => gameState.wordsGoal.filter(el => el === 'red').length;
-  gameState.getCountBlueGoal = () => gameState.wordsGoal.filter(el => el === 'blue').length;
-  gameState.getCountRedCurrent = () => gameState.wordsStates.filter(el => el === 'red').length;
-  gameState.getCountBlueCurrent = () => gameState.wordsStates.filter(el => el === 'blue').length;
+  gs.getRedPlayers = () => gs.players.filter(el => el.team === 'red');
+  gs.getBluePlayers = () => gs.players.filter(el => el.team === 'blue');
+  gs.getTeamLessPlayers = () => gs.getRedPlayers().length < gs.getBluePlayers().length ? 'red' : 'blue';
 
-  gameState.getTurnTeam = () => gameState.turn.isRedTurn ? 'red' : 'blue';
-  gameState.isTeamTurn = (deviceId) => {
-    const player = gameState.getPlayerById(deviceId);
-    return player && player.team === gameState.getTurnTeam();
+  gs.getCountRedGoal = () => gs.wordsGoal.filter(el => el === 'red').length;
+  gs.getCountBlueGoal = () => gs.wordsGoal.filter(el => el === 'blue').length;
+  gs.getCountRedCurrent = () => gs.wordsStates.filter(el => el === 'red').length;
+  gs.getCountBlueCurrent = () => gs.wordsStates.filter(el => el === 'blue').length;
+
+  gs.getTurnTeam = () => gs.turn.isRedTurn ? 'red' : 'blue';
+  gs.isTeamTurn = (deviceId) => {
+    console.log('isTeamTurn', deviceId, gs.players, gs.getPlayerById(deviceId));
+    const player = gs.getPlayerById(deviceId);
+    return player && player.team === gs.getTurnTeam();
   };
-  gameState.isThisTeamTurn = () => gameState.isTeamTurn(gameState.getThisDeviceId());
+  gs.isThisTeamTurn = () => gs.isTeamTurn(gs.getThisDeviceId());
 }

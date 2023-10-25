@@ -48,8 +48,19 @@ export function updateWordBoxes() {
       const div = document.createElement('div');
       div.id = 'word-' + i;
       div.classList.add('word');
-      div.innerText = gameState.words[i];
       div.onclick = clickWordBox.bind(null, i);
+
+      const divWord = document.createElement('div');
+      divWord.id = 'word-text-' + i;
+      divWord.classList.add('word-text');
+      divWord.innerText = gameState.words[i];
+      div.appendChild(divWord);
+
+      const divGuesses = document.createElement('div');
+      divGuesses.id = 'word-guess-' + i;
+      divGuesses.classList.add('word-guess');
+      div.appendChild(divGuesses);
+
       gameboardEl.appendChild(div);
     }
   }
@@ -62,7 +73,12 @@ function updateWordBoxClassStates() {
   const gameState = clientActions.getCachedGameState();
   checkClearLocalGuesses();
 
-//  TODO compare wordsStates to populated and update
+  // remove all guess icons and we'll remake them
+  const prevGuessesToDelete = document.querySelectorAll('.player-guess-word');
+  for (const el of prevGuessesToDelete) {
+    el.remove();
+  }
+
   for (let i = 0; i < gameState.wordsStates.length; i++) {
     const div = document.getElementById('word-' + i);
 
@@ -78,6 +94,18 @@ function updateWordBoxClassStates() {
       }
     } else {
       div.classList.remove('clicked');
+    }
+    // remake the player guess icons
+    if (Array.isArray(gameState.wordsStates[i]) && gameState.wordsStates[i].length > 0) {
+      const divGuess = document.getElementById('word-guess-' + i);
+      // create every player guess icon
+      for (const playerId of gameState.wordsStates[i]) {
+        const playerIcon = document.createElement('div');
+        playerIcon.classList.add('player-guess-word');
+        playerIcon.classList.add(gameState.getPlayerById(playerId).team);
+        playerIcon.innerText = gameState.getPlayerById(playerId).name;
+        divGuess.appendChild(playerIcon);
+      }
     }
 
     // things could be in any state, so remove everything

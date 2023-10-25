@@ -56,5 +56,5 @@ export async function getPlayerList(){
 }
 
 export async function savePlayerList(playerList) {
-  localStorage.setItem(namespace + 'playerList', playerList);
+  localStorage.setItem(namespace + 'playerList', JSON.stringify(playerList));
 }

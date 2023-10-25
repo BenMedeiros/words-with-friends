@@ -21,6 +21,7 @@ export function getSavedPlayer(deviceId) {
 
   if (!fullPlayerList[deviceId]) {
     fullPlayerList[deviceId] = {deviceId, name: ''};
+    savePlayerList(fullPlayerList).then();
   }
 
   return fullPlayerList[deviceId];

@@ -61,9 +61,6 @@ export class LabelInputType {
     if (this.readOnly) this.element.readOnly = true;
 
     if (this.placeholder !== undefined) {
-      if (this.initialValue !== null && this.initialValue !== undefined) {
-        throw new Error('read only fields use placeholder');
-      }
       this.element.placeholder = this.placeholder;
     }
 

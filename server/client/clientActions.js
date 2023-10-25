@@ -13,7 +13,8 @@ import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 import validations from "./validations.js";
 import userMessage from "../../js/app/userMessage.js";
 
-let deviceId = null;
+let deviceId = Number(localStorage.getItem('words-with-friends.deviceId'));
+console.log(deviceId, typeof deviceId);
 let gameState = null;
 let lastPoll = null;
 
@@ -54,6 +55,7 @@ function processResponse(response) {
   if (!deviceId) {
     if (response.thisPlayer && response.thisPlayer.deviceId) {
       deviceId = response.thisPlayer.deviceId;
+      localStorage.setItem('words-with-friends.deviceId', deviceId);
     }
   }
 

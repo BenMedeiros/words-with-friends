@@ -179,11 +179,11 @@ Game board and word box formatting for gameboard.js
   color: var(--color-backdrop-hover);
 }
 
-.word.red {
+.red {
   background-color: red;
 }
 
-.word.blue {
+.blue {
   background-color: blue;
 }
 
@@ -197,4 +197,18 @@ Game board and word box formatting for gameboard.js
 
 .word:hover:not(.red, .blue, .neutral, .death) {
   border-color: green;
+}
+
+.word-guess {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.player-guess-word {
+  color: white;
+  border-radius: 10%;
+  padding-inline: .8rem;
+  margin: .1rem;
+  font-size: 1rem;
 }

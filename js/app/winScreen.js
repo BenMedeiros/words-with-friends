@@ -42,6 +42,8 @@ function createWinScreen() {
     winnerI.createElementIn(winScreenElement);
   }
   //player config
+  const idI = new LabelInputType('playerId', 'integer', 'ID', gameState.thisPlayer.deviceId, null, true);
+  idI.createElementIn(winScreenElement);
   const nameI = new LabelInputType('name', 'string', 'Name', gameState.thisPlayer.name, 'your name', false);
   nameI.createElementIn(winScreenElement);
   const teamI = new SelectInputType('team', 'Team', null, {red: 'red', blue: 'blue'}, null, false);
@@ -65,12 +67,21 @@ function createWinScreen() {
   submit.createElementIn(winScreenElement);
 
   document.getElementById("main").appendChild(winScreenElement);
+  setTimeout(() => {
+    //  i guess i need timeout so it doesn't immediately close thru the propagation
+    winScreenElement.addEventListener('click', event => event.stopPropagation());
+    document.addEventListener('click', closeWinScreen);
+    console.log('settings onp');
+  }, 100);
 }
 
-function closeWinScreen() {
+function closeWinScreen(event) {
+  // event.stopPropagation();
+  console.log('close win scree');
   if (!winScreenElement) return;
   winScreenElement.remove();
   winScreenElement = null;
+  document.removeEventListener('click', closeWinScreen);
 }
 
 
