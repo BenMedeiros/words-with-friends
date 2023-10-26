@@ -216,3 +216,20 @@ Game board and word box formatting for gameboard.js
   margin: .1rem;
   font-size: 1rem;
 }
+
+.word.spy-red {
+  border-color: red;
+}
+
+.word.spy-blue {
+  border-color: blue;
+}
+
+.word.spy-death {
+  border-color: black;
+  background-color: black;
+}
+
+.word.spy-neutral {
+  border-color: yellow;
+}

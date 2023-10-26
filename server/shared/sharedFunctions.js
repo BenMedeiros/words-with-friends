@@ -23,7 +23,6 @@ export function bindCommonFunctions(gs) {
 
   gs.getTurnTeam = () => gs.turn.isRedTurn ? 'red' : 'blue';
   gs.isTeamTurn = (deviceId) => {
-    console.log('isTeamTurn', deviceId, gs.players, gs.getPlayerById(deviceId));
     const player = gs.getPlayerById(deviceId);
     return player && player.team === gs.getTurnTeam();
   };

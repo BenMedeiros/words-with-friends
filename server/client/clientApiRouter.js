@@ -43,7 +43,8 @@ async function post(method, params) {
     );
 
     const result = await response.json();
-    console.log("Success:", result);
+    console.log("Success:", response);
+    if(response.status === 400) throw result;
     return result;
 
   } catch (error) {

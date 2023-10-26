@@ -22,18 +22,22 @@ let lastGuessesSentString = null;
 
 // save the currently displayed words to quickly check if they need update
 let wordsOnScreenString = null;
+let wordsShowingForSpymaster = false;
 
 // create Word box elements using the gameState.words
 export function updateWordBoxes() {
   userMessage.msg('Server Response');
 
   const gameState = clientActions.getCachedGameState();
+  // mark the spymaster's board to see the goals
+  const isSpymaster = gameState.isSpymaster(gameState.getThisDeviceId());
 
-  if (wordsOnScreenString !== JSON.stringify(gameState.words)) {
+  if (wordsOnScreenString !== JSON.stringify(gameState.words) || isSpymaster !== wordsShowingForSpymaster) {
     const gameboardEl = document.getElementById('gameboard');
 
     userMessage.msg('Rebuilding word boxes');
     wordsOnScreenString = JSON.stringify(gameState.words);
+    wordsShowingForSpymaster = isSpymaster;
     // remove existing game words if they've changed (from new game)
     let child = gameboardEl.lastElementChild;
     while (child) {
@@ -46,6 +50,7 @@ export function updateWordBoxes() {
       const div = document.createElement('div');
       div.id = 'word-' + i;
       div.classList.add('word');
+      if(isSpymaster) div.classList.add('spy-' + gameState.wordsGoal[i]);
       div.onclick = clickWordBox.bind(null, i);
 
       const divWord = document.createElement('div');
@@ -80,6 +85,7 @@ function updateWordBoxClassStates() {
   for (let i = 0; i < gameState.wordsStates.length; i++) {
     const div = document.getElementById('word-' + i);
 
+    // handle guesses which are visible to everyone
     const indexOfLocalGuess = localGuessIndexes.indexOf(i);
     if (indexOfLocalGuess !== -1) {
       if (['red', 'blue', 'death', 'neutral'].indexOf(gameState.wordsStates[i]) !== -1) {
