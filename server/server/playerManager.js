@@ -4,7 +4,7 @@
 * Manages all players and player histories.
 * */
 
-import {getDeviceIdCounter, getPlayerList, saveDeviceIdCounter, savePlayerList} from "./dbLocalStorage.js";
+import {getDeviceIdCounter, getPlayerList, saveDeviceIdCounter, savePlayerList} from "./db.js";
 
 let fullPlayerList = await getPlayerList() || {};
 

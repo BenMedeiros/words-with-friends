@@ -2,7 +2,7 @@
 
 // load once from db then keep in cache
 import {gameState} from "./gameState.js";
-import {getWordLists} from "./dbLocalStorage.js";
+import {getWordLists} from "./db.js";
 
 let wordLists = await getWordLists();
 if (!wordLists) {

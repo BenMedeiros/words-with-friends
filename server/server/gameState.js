@@ -1,6 +1,6 @@
 'use strict';
 
-import {getLastSavedGameState, saveGameState} from "./dbLocalStorage.js";
+import {getLastSavedGameState, saveGameState} from "./db.js";
 import {bindCommonFunctions} from "../shared/sharedFunctions.js";
 
 export const gameState = await getLastSavedGameState() || {};

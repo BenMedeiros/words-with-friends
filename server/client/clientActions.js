@@ -64,7 +64,7 @@ function processResponse(response) {
 // polls the server for gameState, will prevent polling if gameState is <15s old
 async function poll(forcePoll = false) {
   // only poll if the data is likely stale
-  if(forcePoll || !lastPoll || new Date() - lastPoll > 15 * 1000){
+  if(forcePoll || !lastPoll || new Date() - lastPoll > 10 * 1000){
     const response = await clientApiRouter.poll({deviceId});
     processResponse(response);
   }else{

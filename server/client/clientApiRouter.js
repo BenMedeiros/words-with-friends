@@ -6,10 +6,10 @@
 * */
 
 // controls whether to use local server api or remote server api
-import api from "../localServer/api.js";
+import api from "../server/api.js";
 import userMessage from "../../js/app/userMessage.js";
 
-const isLocal = true;
+const isLocal = false;
 
 export default {
   newGame: (isLocal ? localCall : post).bind(null, 'newGame'),
@@ -44,8 +44,10 @@ async function post(method, params) {
 
     const result = await response.json();
     console.log("Success:", result);
+    return result;
 
   } catch (error) {
-    console.error("Error:", error);
+    userMessage.errorMsg(error);
+    throw error;
   }
 }
