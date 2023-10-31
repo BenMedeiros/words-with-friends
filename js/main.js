@@ -42,7 +42,8 @@ async function start() {
     if (gameState.winner) {
       winScreen.createWinScreen();
     } else if (gameState.isGameStarted) {
-      winScreen.closeWinScreen();
+      // this is causing the config screen to close on every poll
+      // winScreen.closeWinScreen();
     }
 
   });

@@ -10,8 +10,12 @@ import {ButtonType} from "../../html/tinyComponents/ButtonType.js";
 import clientActions from "../../server/client/clientActions.js";
 import {SelectInputType} from "../../html/tinyComponents/SelectInputType.js";
 import {LabelInputType} from "../../html/tinyComponents/LabelInputType.js";
+import {createPlayerIcon} from "./playerSelector.js";
 
 let winScreenElement = null;
+// quick access for server responses
+let leftDiv = null;
+let rightDiv = null;
 
 // create screen to show if player won or lost
 function createWinScreen() {
@@ -66,6 +70,8 @@ function createWinScreen() {
   });
   submit.createElementIn(winScreenElement);
 
+  createPlayerTeamBoxes(winScreenElement);
+
   document.getElementById("main").appendChild(winScreenElement);
   setTimeout(() => {
     //  i guess i need timeout so it doesn't immediately close thru the propagation
@@ -82,6 +88,67 @@ function closeWinScreen(event) {
   winScreenElement.remove();
   winScreenElement = null;
   document.removeEventListener('click', closeWinScreen);
+  leftDiv = null;
+  rightDiv = null;
+  document.removeEventListener('new-server-response', updatePlayerTeamBoxes);
+}
+
+// show the teams/players for everyone to see, allow add/remove players
+function createPlayerTeamBoxes(parentEl) {
+  const wrapperDiv = document.createElement('div');
+  wrapperDiv.style.border = 'solid black 1px';
+  wrapperDiv.style.display = 'flex';
+  wrapperDiv.style.justifyContent = 'space-evenly';
+
+  leftDiv = document.createElement('div');
+  leftDiv.style.border = 'solid black 1px';
+  leftDiv.style.padding = '1rem';
+  // leftDiv.style.width = '50%';
+  wrapperDiv.appendChild(leftDiv);
+
+  rightDiv = document.createElement('div');
+  rightDiv.style.border = 'solid black 1px';
+  rightDiv.style.padding = '1rem';
+  // rightDiv.style.width = '50%';
+  wrapperDiv.appendChild(rightDiv);
+
+  const leftDivTitle = document.createElement('div');
+  leftDivTitle.innerText = 'Red Team';
+  leftDiv.appendChild(leftDivTitle);
+
+  const rightDivTitle = document.createElement('div');
+  rightDivTitle.innerText = 'Blue Team';
+  rightDiv.appendChild(rightDivTitle);
+
+  updatePlayerTeamBoxes();
+  parentEl.appendChild(wrapperDiv);
+
+  document.addEventListener('new-server-response', updatePlayerTeamBoxes);
+}
+
+// draw the player icons per team, update  on every server response
+function updatePlayerTeamBoxes() {
+  // remove the icons since they may have changed
+  // keep the first child since that's the header
+  while (leftDiv.firstChild && leftDiv.firstChild !== leftDiv.lastChild) {
+    leftDiv.removeChild(leftDiv.lastChild);
+  }
+  while (rightDiv.firstChild && rightDiv.firstChild !== rightDiv.lastChild) {
+    rightDiv.removeChild(rightDiv.lastChild);
+  }
+
+  const gameState = clientActions.getCachedGameState();
+
+  for (const player of gameState.players) {
+    const playerIcon = createPlayerIcon(player);
+    if (player.team === 'red') {
+      leftDiv.appendChild(playerIcon);
+    } else if (player.team === 'blue') {
+      rightDiv.appendChild(playerIcon);
+    }
+    // change player team on click
+    playerIcon.onclick = async () => await clientActions.changePlayerTeam(player);
+  }
 }
 
 

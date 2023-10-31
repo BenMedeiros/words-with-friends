@@ -29,6 +29,7 @@ export default {
   poll,
   newGame,
   updatePlayer,
+  changePlayerTeam,
   startGame,
   submitClue,
   markGuesses,
@@ -64,16 +65,28 @@ function processResponse(response) {
 // polls the server for gameState, will prevent polling if gameState is <15s old
 async function poll(forcePoll = false) {
   // only poll if the data is likely stale
-  if(forcePoll || !lastPoll || new Date() - lastPoll > 10 * 1000){
+  if (forcePoll || !lastPoll || new Date() - lastPoll > 10 * 1000) {
     const response = await clientApiRouter.poll({deviceId});
     processResponse(response);
-  }else{
+  } else {
     console.log('Skipping this polling.');
   }
 }
 
 async function newGame(wordKey) {
   const response = await clientApiRouter.newGame({deviceId, wordKey});
+  processResponse(response);
+}
+
+// allow anyone to change any player's team
+async function changePlayerTeam(player) {
+  throwAndDisplayErrorIfMsg(validations.updatePlayer);
+
+  const response = await clientApiRouter.updatePlayer({
+    deviceId: player.deviceId,
+    name: player.name,
+    team: player.team === 'red' ? 'blue' : 'red'
+  });
   processResponse(response);
 }
 

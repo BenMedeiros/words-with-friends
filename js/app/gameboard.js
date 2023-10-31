@@ -3,6 +3,7 @@
 import clientActions from "../../server/client/clientActions.js";
 import validations from "../../server/client/validations.js";
 import userMessage from "./userMessage.js";
+import {createPlayerIcon} from "./playerSelector.js";
 
 /*
 * Manages creation of board word boxes, and toggles the css classes based on client
@@ -77,7 +78,7 @@ function updateWordBoxClassStates() {
   checkClearLocalGuesses();
 
   // remove all guess icons and we'll remake them
-  const prevGuessesToDelete = document.querySelectorAll('.player-guess-word');
+  const prevGuessesToDelete = document.querySelectorAll('.gameboard .player-guess-word');
   for (const el of prevGuessesToDelete) {
     el.remove();
   }
@@ -104,10 +105,7 @@ function updateWordBoxClassStates() {
       const divGuess = document.getElementById('word-guess-' + i);
       // create every player guess icon
       for (const playerId of gameState.wordsStates[i]) {
-        const playerIcon = document.createElement('div');
-        playerIcon.classList.add('player-guess-word');
-        playerIcon.classList.add(gameState.getPlayerById(playerId).team);
-        playerIcon.innerText = gameState.getPlayerById(playerId).name;
+        const playerIcon = createPlayerIcon(gameState.getPlayerById(playerId));
         divGuess.appendChild(playerIcon);
       }
     }

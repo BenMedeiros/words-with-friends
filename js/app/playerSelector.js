@@ -33,3 +33,11 @@ export function createPlayerSelector() {
     clientActions.bindDeviceId(Number(playerSelectInput.getValue()));
   };
 }
+// creates the player icon tag to mark their guess or show on team selector
+export function createPlayerIcon(player) {
+  const playerIcon = document.createElement('div');
+  playerIcon.classList.add('player-guess-word');
+  playerIcon.classList.add(player.team);
+  playerIcon.innerText = player.name;
+  return playerIcon;
+}

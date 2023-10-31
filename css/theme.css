@@ -26,7 +26,7 @@
   --color-btn-delete-hover: #d11616;
 
   /* change the size of word boxes and font*/
-  --zoom-size: 1;
+  --zoom-size: 10;
 }
 
 body {
@@ -166,13 +166,13 @@ Game board and word box formatting for gameboard.js
   border: solid black;
   background-color: var(--color-menu-backdrop);
   color: var(--color-menu-subtext);
-  min-height: calc(4rem * var(--zoom-size));
+  min-height: calc(4rem * var(--zoom-size) /10);
   height: auto;
-  width: calc(7rem * var(--zoom-size));
+  width: calc(7rem * var(--zoom-size) /10);
   flex-grow: 1;
-  max-width: calc(15rem * var(--zoom-size));;
+  max-width: calc(15rem * var(--zoom-size)/10);;
   /* prob need to auto scale this depending on word length*/
-  font-size: calc(1.4rem * var(--zoom-size));
+  font-size: calc(1.4rem * var(--zoom-size)/10);
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
