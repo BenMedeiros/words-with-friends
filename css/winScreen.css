@@ -19,7 +19,7 @@
   left: 0;
   right: 0;
   width: 15rem;
-  height: 20rem;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
@@ -66,3 +66,16 @@
   height: 6rem;
   margin: 1rem;
 }
+
+#team-selector-box {
+  display: flex;
+  justify-content: space-evenly;
+  margin-block: 1rem;
+}
+
+#team-selector-box > div {
+  border: solid black 1px;
+  padding: 1rem;
+}
+
+

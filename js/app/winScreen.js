@@ -50,27 +50,23 @@ function createWinScreen() {
   idI.createElementIn(winScreenElement);
   const nameI = new LabelInputType('name', 'string', 'Name', gameState.thisPlayer.name, 'your name', false);
   nameI.createElementIn(winScreenElement);
-  const teamI = new SelectInputType('team', 'Team', gameState.thisPlayer.team, {red: 'red', blue: 'blue'}, null, false);
-  teamI.createElementIn(winScreenElement);
   //game config
   const wordKeyI = new SelectInputType('wordKey', 'Word List', gameState.wordKey, wordsMap, null, false);
   wordKeyI.createElementIn(winScreenElement);
+
+  createPlayerTeamBoxes(winScreenElement);
 
   // allow player to update their team and the game wordKey
   const submit = new ButtonType('new-game', 'New Game', async () => {
     // newGame clears players so must be first
     await clientActions.newGame(wordKeyI.getValue());
 
-    if (!gameState.thisPlayer
-      || teamI.getValue() !== gameState.thisPlayer.team
-      || nameI.getValue() !== gameState.thisPlayer.name) {
-      await clientActions.updatePlayer(nameI.getValue(), teamI.getValue());
+    if (!gameState.thisPlayer || nameI.getValue() !== gameState.thisPlayer.name) {
+      await clientActions.updatePlayer(nameI.getValue(), gameState.thisPlayer.team);
     }
     closeWinScreen();
   });
   submit.createElementIn(winScreenElement);
-
-  createPlayerTeamBoxes(winScreenElement);
 
   document.getElementById("main").appendChild(winScreenElement);
   setTimeout(() => {
@@ -96,20 +92,12 @@ function closeWinScreen(event) {
 // show the teams/players for everyone to see, allow add/remove players
 function createPlayerTeamBoxes(parentEl) {
   const wrapperDiv = document.createElement('div');
-  wrapperDiv.style.border = 'solid black 1px';
-  wrapperDiv.style.display = 'flex';
-  wrapperDiv.style.justifyContent = 'space-evenly';
+  wrapperDiv.id = 'team-selector-box';
 
   leftDiv = document.createElement('div');
-  leftDiv.style.border = 'solid black 1px';
-  leftDiv.style.padding = '1rem';
-  // leftDiv.style.width = '50%';
   wrapperDiv.appendChild(leftDiv);
 
   rightDiv = document.createElement('div');
-  rightDiv.style.border = 'solid black 1px';
-  rightDiv.style.padding = '1rem';
-  // rightDiv.style.width = '50%';
   wrapperDiv.appendChild(rightDiv);
 
   const leftDivTitle = document.createElement('div');
