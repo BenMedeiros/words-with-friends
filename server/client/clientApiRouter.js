@@ -34,7 +34,7 @@ async function localCall(method, params) {
 async function post(method, params) {
   try {
     const response = await fetch(
-      "https://lfiwccnp51.execute-api.us-west-2.amazonaws.com/default/lamda_test_template_restful", {
+      "https://zs6x8tlo5a.execute-api.us-west-2.amazonaws.com/default/words-with-friends", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
