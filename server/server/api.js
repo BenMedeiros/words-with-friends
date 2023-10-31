@@ -10,6 +10,7 @@ import {getSavedPlayer, updateSavedPlayer} from "./playerManager.js";
 
 export default {
   newGame,
+  clearPlayers,
   updatePlayer,
   startGame,
   submitClue,
@@ -25,6 +26,13 @@ function newGame(deviceId, wordKey) {
   initializeWordLists();
   selectNewGameWords(wordKey);
 
+  return poll(deviceId);
+}
+// clear all players from game
+function clearPlayers(deviceId){
+  if (gameState.isGameStarted) throw new Error('Game already started.');
+
+  gameState.players = [];
   return poll(deviceId);
 }
 

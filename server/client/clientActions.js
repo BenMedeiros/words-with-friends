@@ -28,6 +28,7 @@ export default {
   },
   poll,
   newGame,
+  clearPlayers,
   updatePlayer,
   changePlayerTeam,
   startGame,
@@ -75,6 +76,13 @@ async function poll(forcePoll = false) {
 
 async function newGame(wordKey) {
   const response = await clientApiRouter.newGame({deviceId, wordKey});
+  processResponse(response);
+}
+
+async function clearPlayers(){
+  throwAndDisplayErrorIfMsg(validations.updatePlayer);
+
+  const response = await clientApiRouter.clearPlayers({deviceId});
   processResponse(response);
 }
 

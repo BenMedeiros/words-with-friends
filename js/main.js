@@ -21,14 +21,6 @@ async function start() {
     winScreen.createWinScreen();
   }
 
-  // fake players button
-  const fakePlayersBtnType = new ButtonType('add-fake-player', 'Add Fake Player',
-    async () => {
-      clientActions.bindDeviceId(null);
-    },
-    false, null,
-    document.getElementById("controls-bar"));
-
   // start button
   const startBtnType = new ButtonType('start-game', 'Start Game',
     clientActions.startGame,

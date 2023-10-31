@@ -13,6 +13,7 @@ const isLocal = false;
 
 export default {
   newGame: (isLocal ? localCall : post).bind(null, 'newGame'),
+  clearPlayers: (isLocal ? localCall : post).bind(null, 'clearPlayers'),
   updatePlayer: (isLocal ? localCall : post).bind(null, 'updatePlayer'),
   startGame: (isLocal ? localCall : post).bind(null, 'startGame'),
   submitClue: (isLocal ? localCall : post).bind(null, 'submitClue'),

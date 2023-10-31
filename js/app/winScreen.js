@@ -11,8 +11,10 @@ import clientActions from "../../server/client/clientActions.js";
 import {SelectInputType} from "../../html/tinyComponents/SelectInputType.js";
 import {LabelInputType} from "../../html/tinyComponents/LabelInputType.js";
 import {createPlayerIcon} from "./playerSelector.js";
+import userMessage from "./userMessage.js";
 
 let winScreenElement = null;
+let nameI = null;
 // quick access for server responses
 let leftDiv = null;
 let rightDiv = null;
@@ -27,7 +29,11 @@ function createWinScreen() {
   winScreenElement.classList.add('win-screen');
 
   const div = document.createElement("div");
-  div.innerText = 'Game Over';
+  if(!gameState.thisPlayer || !gameState.thisPlayer.name|| gameState.thisPlayer.name.trim() === ''){
+    div.innerText = 'New Player';
+  }else if(!gameState.winner && !gameState.isGameStarted){
+    div.innerText = 'Waiting to Start';
+  }
   div.style.fontSize = 'xx-large';
   winScreenElement.appendChild(div);
 
@@ -48,7 +54,7 @@ function createWinScreen() {
   //player config
   const idI = new LabelInputType('playerId', 'integer', 'ID', gameState.thisPlayer.deviceId, null, true);
   idI.createElementIn(winScreenElement);
-  const nameI = new LabelInputType('name', 'string', 'Name', gameState.thisPlayer.name, 'your name', false);
+  nameI = new LabelInputType('name', 'string', 'Name', gameState.thisPlayer.name, 'your name', false);
   nameI.createElementIn(winScreenElement);
   //game config
   const wordKeyI = new SelectInputType('wordKey', 'Word List', gameState.wordKey, wordsMap, null, false);
@@ -56,15 +62,15 @@ function createWinScreen() {
 
   createPlayerTeamBoxes(winScreenElement);
 
+  // clear players
+  const clearPlayerBtn = new ButtonType('clear-players', 'Clear Players', clientActions.clearPlayers);
+  clearPlayerBtn.createElementIn(winScreenElement);
+
   // allow player to update their team and the game wordKey
   const submit = new ButtonType('new-game', 'New Game', async () => {
     // newGame clears players so must be first
     await clientActions.newGame(wordKeyI.getValue());
-
-    if (!gameState.thisPlayer || nameI.getValue() !== gameState.thisPlayer.name) {
-      await clientActions.updatePlayer(nameI.getValue(), gameState.thisPlayer.team);
-    }
-    closeWinScreen();
+    await closeWinScreen();
   });
   submit.createElementIn(winScreenElement);
 
@@ -77,10 +83,21 @@ function createWinScreen() {
   }, 100);
 }
 
-function closeWinScreen(event) {
+async function closeWinScreen(event) {
   // event.stopPropagation();
   console.log('close win scree');
   if (!winScreenElement) return;
+  // make sure user made a name
+  if(!nameI.getValue() || nameI.getValue().trim() === ''){
+    userMessage.errorMsg('Must input a name');
+    return;
+  }else{
+    const gameState = clientActions.getCachedGameState();
+    if (!gameState.thisPlayer || nameI.getValue() !== gameState.thisPlayer.name) {
+      await clientActions.updatePlayer(nameI.getValue(), gameState.thisPlayer.team);
+    }
+  }
+
   winScreenElement.remove();
   winScreenElement = null;
   document.removeEventListener('click', closeWinScreen);
